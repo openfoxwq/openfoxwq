@@ -15,7 +15,7 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 
-	pb "github.com/ale64bit/openfoxwq/proto"
+	pb "github.com/openfoxwq/openfoxwq/proto"
 
 	_ "net/http/pprof"
 )

@@ -1,6 +1,6 @@
 rm -f proto/*_foxwqrpc.pb.go
 
-go install github.com/ale64bit/openfoxwq/cmd/protoc-gen-go-foxwqrpc && protoc \
+go install github.com/openfoxwq/openfoxwq/cmd/protoc-gen-go-foxwqrpc && protoc \
    --cpp_out=../openfoxwq_qtclient \
    --go_out=. \
    --go-foxwqrpc_out=. \

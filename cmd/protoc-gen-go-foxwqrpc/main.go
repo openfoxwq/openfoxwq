@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 
-	pb "github.com/ale64bit/openfoxwq/proto" // strange loop :)
+	pb "github.com/openfoxwq/openfoxwq/proto" // strange loop :)
 )
 
 func main() {
