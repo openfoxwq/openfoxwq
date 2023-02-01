@@ -1,0 +1,36 @@
+syntax="proto2";
+package openfoxwq;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+// ================================================================================
+// Message Tag Options
+// ================================================================================
+extend google.protobuf.MethodOptions {
+    optional MessageTag msg_tag = 50000;
+}
+
+message MessageTag {
+    optional uint32 req = 1;
+    optional uint32 resp = 2;
+    optional MessageHeader header = 3;
+}
+
+message MessageHeader {
+    required uint32 tag1 = 1; 
+    required uint32 tag2 = 7;
+    optional int64 player_id = 3;
+
+    // Unknown fields
+    optional int64 unknown_field_2 = 2; // sample value: 1286582141, 894468146, 894471096
+    optional int64 unknown_field_4 = 4; // sample value: 1152921504611655256 (some kind of timestamp or req clock?), 1152921504611655256
+    optional int64 unknown_field_5 = 5; // sample value: always 32 ?
+    optional int64 unknown_field_6 = 6; // sample value: always 6 ?
+    optional int64 unknown_field_8 = 8; // sample value: 0, 1, 3, 106
+    optional int64 unknown_field_9 = 9; // sample value: 1, 2
+    optional int64 unknown_field_12 = 12; // sample value: 5834241477485002752, 5726999558459295913, 5726999558459296052, 5726999558459296068
+    optional string unknown_field_13 = 13; // sample value: {"85.76.118.58"} (some addr, but of what?)
+    optional int64 unknown_field_15 = 15; // sample value: 1673619141311840 (unix ts?)
+}

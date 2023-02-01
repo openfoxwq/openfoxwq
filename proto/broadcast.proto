@@ -1,0 +1,227 @@
+syntax = "proto2";
+package openfoxwq;
+
+import "google/protobuf/empty.proto";
+import "proto/reqOption.proto";
+import "proto/common.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message LoginBroadcastServerRequest {
+    required int64 player_id = 1;
+    required int64 version = 2;
+    required string mac_address = 4;
+    required bytes token = 5;
+
+    required int64 unknown_field_3 = 3; // sample value: 0
+    required int64 unknown_field_6 = 6; // sample value: 1
+    required int64 unknown_field_7 = 7; // sample value: 1
+}
+
+message LoginBroadcastServerResponse {
+    optional int64 player_id = 2; 
+
+    optional int64 unknown_field_1 = 1; // sample value: 0
+    optional string unknown_field_3 = 3; // some kind of hash/token
+}
+
+message ListBroadcastsRequest {
+    optional int64 player_id = 1; 
+
+    optional int64 unknown_field_2 = 2; // sample value: 1
+    optional int64 unknown_field_3 = 3; // sample value: 0
+}
+
+message ListBroadcastsResponse {
+    repeated BroadcastInfo broadcasts = 3;
+    optional int64 page_index = 4; // not sure
+    optional int64 page_count = 5; // not sure
+
+    optional int64 unknown_field_1 = 1; // sample value: 0
+}
+
+message EnterBroadcastRequest {
+    required int64 player_id = 1;
+    required int64 broadcast_id = 2;
+}
+
+message EnterBroadcastResponse {
+    required int64 player_id = 2;
+    required int64 broadcast_id = 3;
+
+    optional int64 unknown_field_1 = 1; // sample value: 0
+}
+
+message LeaveBroadcastRequest {
+    required int64 player_id = 1;
+    required int64 broadcast_id = 2;
+}
+
+message LeaveBroadcastResponse {
+    required int64 player_id = 2;
+    required int64 broadcast_id = 3;
+
+    optional int64 unknown_field_1 = 1; // sample value: 0
+}
+
+message HeartbeatRequest { 
+}
+
+message BroadcastSettingEvent {
+    required int64 player_id = 2;
+    optional int64 player_id_black = 4;
+    optional int64 player_id_white = 5;
+    required int64 broadcast_id = 3;
+    optional MatchSettings match_settings = 6;
+}
+
+message BroadcastStateEvent {
+    message BroadcastState {
+        repeated int64 encoded_moves = 1;
+
+        optional int64 unknown_field_2 = 2;
+        optional int64 unknown_field_3 = 3;
+        // repeated  ??? unknown_field_5 = 5; // seems to be one entry per move, and it's an object or string?
+    }
+
+    required int64 player_id = 2;
+    required int64 broadcast_id = 3;
+    optional BroadcastState state = 4;
+    optional int64 move_count = 6;
+}
+
+message BroadcastMoveEvent {
+    required int64 player_id = 2;
+    required int64 broadcast_id = 3;
+    optional int64 encoded_move = 4;
+    optional int64 time_left = 6;
+    optional int64 move_number = 8;
+
+    optional int64 unknown_field_5 = 5; // sample value: 0
+}
+
+message BroadcastGameResultEvent {
+    required int64 broadcast_id = 3;
+    optional Color winner = 4;
+    optional int64 score_lead = 5;
+
+    optional int64 unknown_field_1 = 1; // sample value: 0
+    optional int64 unknown_field_2 = 2; // sample value: 0
+}
+
+message BroadcastTimeControlEvent {
+    required int64 player_id = 2;
+    required int64 broadcast_id = 3;
+    optional int64 current_period = 5;
+    optional int64 time_left = 6;
+
+    optional int64 unknown_field_4 = 4; // sample value: 0
+}
+
+// Unknown requests
+
+// CLI: [tag:2EE4] payload: {1: 500132890, 2: 500132890} [checksum:37990767]
+message UnknownRequest1 {
+    required int64 unknown_field_1 = 1; // sample value: self player id
+    required int64 unknown_field_2 = 2; // sample value: self player id
+}
+
+// CLI: [tag:36B0] payload: {1: 500132890, 2: 0, 3: 1} [checksum:22ba0436]
+message UnknownRequest2 {
+    required int64 player_id = 1;
+    optional int64 unknown_field_2 = 2; 
+    optional int64 unknown_field_3 = 3; 
+}
+
+// CLI: [tag:239A] payload: {1: 500132890} [checksum:10ba03e4]
+message UnknownRequest3 {
+    required int64 player_id = 1;
+}
+
+// CLI: [tag:39D1] payload: {1: 500132890, 10: 0, 30: 0} [checksum:2c8f0572]
+message UnknownRequest4 {
+    required int64 player_id = 1;
+    optional int64 unknown_field_10 = 10; 
+    optional int64 unknown_field_30 = 30; 
+}
+
+// CLI: [tag:46B9] payload: {1: 500132890} [checksum:12ed0426]
+message UnknownRequest5 {
+    required int64 player_id = 1;
+}
+
+// CLI: [tag:7526] payload: {1: 500132890} [checksum:0ffc03c2]
+message UnknownRequest6 {
+    required int64 player_id = 1;
+}
+
+// SRV: [tag:7527] payload: {1: 500132890, 2: 0} [checksum:17aa03d3]
+message UnknownResponse6 {
+    required int64 player_id = 1;
+    optional int64 unknown_field_2 = 2; // sample value: 0
+}
+
+// CLI: [tag:7528] payload: {1: 500132890} [checksum:100c03c4]
+message UnknownRequest7 {
+    required int64 player_id = 1;
+}
+
+// SRV: [tag:7529] payload: {1: 500132890, 2: 0} [checksum:17be03d5]
+message UnknownResponse7 {
+    required int64 player_id = 1;
+    optional int64 unknown_field_2 = 2; // sample value: 0
+}
+
+// CLI: [tag:752A] payload: {1: 500132890} [checksum:101c03c6]
+message UnknownRequest8 {
+    required int64 player_id = 1;
+}
+
+// SRV: [tag:752B] payload: {1: 500132890, 2: 0} [checksum:17d203d7]
+message UnknownResponse8 {
+    required int64 player_id = 1;
+    optional int64 unknown_field_2 = 2; // sample value: 0
+}
+
+service Broadcast {
+    rpc Login(LoginBroadcastServerRequest) returns (LoginBroadcastServerResponse) {
+        option (msg_tag) = { req:0x0FA0 resp:0x0FA5 };
+    }
+    rpc ListBroadcasts(ListBroadcastsRequest) returns (stream ListBroadcastsResponse) {
+        option (msg_tag) = { req:0x46B4 resp:0x0FCC };
+    }
+    rpc EnterBroadcast(EnterBroadcastRequest) returns (EnterBroadcastResponse) {
+        option (msg_tag) = { req:0x13C4 resp:0x13C9 };
+    }
+    rpc ListenBroadcastSettingEvents(google.protobuf.Empty) returns (stream BroadcastSettingEvent) {
+        option (msg_tag) = { resp:0x1419 };
+    }
+    rpc ListenBroadcastStateEvents(google.protobuf.Empty) returns (stream BroadcastStateEvent) {
+        option (msg_tag) = { resp:0x141B };
+    }
+    rpc ListenBroadcastMoveEvents(google.protobuf.Empty) returns (stream BroadcastMoveEvent) {
+        option (msg_tag) = { resp:0x1B5E };
+    }
+    rpc ListenBroadcastGameResultEvents(google.protobuf.Empty) returns (stream BroadcastGameResultEvent) {
+        option (msg_tag) = { resp:0x1C12 };
+    }
+    rpc ListenBroadcastTimeControlEvents(google.protobuf.Empty) returns (stream BroadcastTimeControlEvent) {
+        option (msg_tag) = { resp:0x1C1E };
+    }
+    rpc LeaveBroadcast(LeaveBroadcastRequest) returns (LeaveBroadcastResponse) {
+        option (msg_tag) = { req:0x13D8 resp:0x13DD };
+    }
+    rpc Heartbeat(HeartbeatRequest) returns (google.protobuf.Empty) {
+        option (msg_tag) = { req:0x0064 };
+    }
+
+    // Unknown methods
+    rpc UnknownMethod1(UnknownRequest1) returns (google.protobuf.Empty) { option (msg_tag) = { req:0x2EE4 }; }
+    rpc UnknownMethod2(UnknownRequest2) returns (google.protobuf.Empty) { option (msg_tag) = { req:0x36B0 }; }
+    rpc UnknownMethod3(UnknownRequest3) returns (google.protobuf.Empty) { option (msg_tag) = { req:0x239A }; }
+    rpc UnknownMethod4(UnknownRequest4) returns (google.protobuf.Empty) { option (msg_tag) = { req:0x39D1 }; }
+    rpc UnknownMethod5(UnknownRequest5) returns (google.protobuf.Empty) { option (msg_tag) = { req:0x46B9 }; }
+    rpc UnknownMethod6(UnknownRequest6) returns (UnknownResponse6) { option (msg_tag) = { req:0x7526 resp:0x7527 }; }
+    rpc UnknownMethod7(UnknownRequest7) returns (UnknownResponse7) { option (msg_tag) = { req:0x7528 resp:0x7529 }; }
+    rpc UnknownMethod8(UnknownRequest8) returns (UnknownResponse8) { option (msg_tag) = { req:0x752A resp:0x752B }; }
+}

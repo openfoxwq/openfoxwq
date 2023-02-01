@@ -13,3 +13,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Test directories
+data/
+log/
+experimental/
+
+# Mac files
+.DS_Store

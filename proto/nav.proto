@@ -1,0 +1,57 @@
+syntax = "proto2";
+package openfoxwq;
+
+import "proto/reqOption.proto";
+import "proto/common.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message ListServersRequest {
+    required int64 player_id = 1;
+}
+
+message ListServersResponse {
+    optional LobbySvrInfo server_info = 3;
+}
+
+message LoginRequest {
+    required string user = 1;
+    required string app = 2;
+    required string password_hash = 3;
+    required int64 client_version = 5; 
+    required string mac_address = 7;
+
+    // Unknown fields
+    optional int64 unknown_field_4 = 4; // sample value: 8
+}
+
+message LoginResponse {
+    message Results {
+        optional int64 wins = 1;
+        optional int64 losses = 2;
+        optional int64 draws = 3;
+    }
+
+    message AllResults {
+        optional int64 player_id = 1;
+        optional Results current = 9;
+        optional Results ranked = 10;
+        optional Results free = 11;
+    }
+
+    required int64 player_id = 2;
+    required PlayerInfo player_info = 3;
+    required AllResults results = 4;
+    required bytes token1 = 8;
+    required bytes token2 = 10;
+    required string bind_url = 24;
+}
+
+service Navigation {
+    rpc ListServers(ListServersRequest) returns (ListServersResponse) {
+        option (msg_tag) = { req:0x0BB8 resp:0x0BBD };
+    }
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (msg_tag) = { req:0x07D0 resp:0x07D5 };
+    }
+}

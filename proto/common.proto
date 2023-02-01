@@ -1,0 +1,214 @@
+syntax = "proto2";
+package openfoxwq;
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message VersionInfo {
+    required int64 version1 = 1;
+    required int64 version2 = 2;
+    optional string update_info = 3;
+    optional string install_url = 5;
+    repeated string qgi = 6;
+    repeated string qgi_hash = 7;
+}
+
+message ProxyLineInfo {
+    message ProxyAddressInfo {
+        required string host1 = 1;
+        required int64 port1 = 2;
+        required string host2 = 3;
+        required int64 port2 = 4;
+    }
+
+    required int64 index = 1;
+    required string name = 2;
+    required ProxyAddressInfo address_info = 3;
+}
+
+message LobbySvrInfo {
+    optional string name = 2;
+
+    optional string broadcast_host = 5;
+    optional int32 broadcast_port = 6;
+
+    optional int64 num_players = 3;
+    optional int64 num_matches = 4;
+
+    optional string unknown_host_1 = 13;
+    optional int32  unknown_port_1 = 14;
+
+    optional string unknown_host_2 = 15;
+    optional int32  unknown_port_2 = 16;
+
+    optional string unknown_host_3 = 17;
+    optional int32  unknown_port_3 = 18;
+
+    optional string unknown_host_4 = 19;
+    optional int32  unknown_port_4 = 20;
+
+    optional string play_host = 21;
+    optional int32  play_port = 22;
+
+    map<int32, string> name_loc = 23;
+
+    // Unknown fields
+    optional int64 unknown_field_7 = 7; // sample value: 86
+    optional int64 unknown_field_8 = 8; // sample value: 50800, max players?
+}
+
+
+enum Color {
+    COL_NONE = 0;
+    COL_BLACK = 1;
+    COL_WHITE = 2;
+}
+
+enum Rank {
+    RANK_18K = 0;
+    RANK_17K = 1;
+    RANK_16K = 2;
+    RANK_15K = 3;
+    RANK_14K = 4;
+    RANK_13K = 5;
+    RANK_12K = 6;
+    RANK_11K = 7;
+    RANK_10K = 8;
+
+    RANK_9K  = 9;
+    RANK_8K  = 10;
+    RANK_7K  = 11;
+    RANK_6K  = 12;
+    RANK_5K  = 13;
+    RANK_4K  = 14;
+    RANK_3K  = 15;
+    RANK_2K  = 16;
+    RANK_1K  = 17;
+
+    RANK_1D  = 18;
+    RANK_2D  = 19;
+    RANK_3D  = 20;
+    RANK_4D  = 21;
+    RANK_5D  = 22;
+    RANK_6D  = 23;
+    RANK_7D  = 24;
+    RANK_8D  = 25;
+    RANK_9D  = 26;
+    RANK_10D = 27;
+
+    RANK_1P  = 100;
+    RANK_2P  = 101;
+    RANK_3P  = 102;
+    RANK_4P  = 103;
+    RANK_5P  = 104;
+    RANK_6P  = 105;
+    RANK_7P  = 106;
+    RANK_8P  = 107;
+    RANK_9P  = 108;
+    RANK_10P  = 109;
+}
+
+enum Country {
+    UNKNOWN = 0;
+    USA = 1;
+    RUSSIA = 7;
+    SOUTHAFRICA = 27;
+    NETHERLANDS = 31;
+    FRANCE = 33;
+    ITALY = 39;
+    UK = 44;
+    SWEDEN = 46;
+    GERMANY = 49;
+    CHILE = 56;
+    PHILIPPINES = 63;
+    SINGAPORE = 65;
+    JAPAN = 81;
+    TAIWAN = 83;
+    KOREA = 82;
+    CHINA = 86;
+    ALBANIA = 355;
+    BELARUS = 375;
+    UKRAINE = 380;
+    HONGKONG = 852;
+    MACAU = 853;
+    CANADA = 11111;
+}
+
+enum PlayerStatus {
+    PSTATUS_IDLE = 0;
+    PSTATUS_MATCH = 1;
+    PSTATUS_WATCH = 2;
+}
+
+message PlayerInfo {
+    required int64 player_id = 1;
+    optional string name = 2;
+    optional string name_native = 3;
+    optional Rank rank = 4;
+    optional Country country = 5;
+    optional int64 club_id = 6;
+    optional bool accepting_matches = 7;
+    optional PlayerStatus status = 9;
+    optional int64 ranked_wins = 10;
+    optional int64 ranked_losses = 11;
+    optional int64 foxcoin = 21;
+
+    // Unknown fields
+    optional int64 unknown_field_8 = 8; // rating or wr
+    optional int64 unknown_field_13 = 13; // rating or wr
+}
+
+message MatchSettings {
+   required int64 player_id_first = 1;
+   required int64 player_id_second = 2;
+   optional int64 handicap = 4;
+   optional int64 komi = 5;
+   required int64 main_time_sec = 7;
+   required int64 byoyomi_time_sec = 8;
+   required int64 byoyomi_periods = 9;
+   optional bool chinese_rules = 10;
+   required int64 board_size = 16;
+}
+
+message RoomId {
+    optional int64 id_1 = 1;
+    optional int64 id_2 = 2;
+    optional int64 id_3 = 3;
+    optional int64 id_4 = 4;
+}
+
+message BroadcastInfo {
+    message BroadcastPlayerInfo {
+        optional string name = 1;
+        optional string name_alt = 2;
+        optional Rank rank = 3;
+        optional Country country = 4;
+    }
+
+    enum BroadcastType {
+        RT_UNKNOWN = 0;
+        RT_MATCH = 1;
+        RT_BROADCAST = 4;
+        RT_COMMENTARY = 5;
+        RT_CHAMPIONSHIP = 6;
+    }
+
+    enum BroadcastState {
+        RS_UNKNOWN = 0;
+        RS_OPENING = 1;
+        RS_1PERIOD = 2;
+        RS_MIDDLEGAME = 3;
+        RS_ENDGAME = 4;
+        RS_END = 5;
+        RS_REVIEW = 6;
+    }
+
+    required int64 id = 1;
+    required BroadcastType type = 3;
+    optional BroadcastState state = 8;
+    optional string broadcaster = 9;
+    required int64 online_count = 10;
+    required int64 player_id_black = 11;
+    required int64 player_id_white = 12;
+    required BroadcastPlayerInfo player_info_black = 13;
+    required BroadcastPlayerInfo player_info_white = 14;
+}

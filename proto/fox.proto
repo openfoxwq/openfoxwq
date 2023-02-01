@@ -1,0 +1,32 @@
+syntax = "proto2";
+package openfoxwq;
+
+import "proto/reqOption.proto";
+import "proto/common.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message GetNavInfoRequest {
+    required int64 unknown_field_1 = 1; 
+    required int64 unknown_field_3 = 3; 
+    required int64 unknown_field_4 = 4; 
+    required int64 unknown_field_5 = 5; 
+    required int64 unknown_field_6 = 6; 
+    required int64 unknown_field_7 = 7; 
+}
+
+message GetNavInfoResponse {
+    required string nav_host = 2;
+    required int64 nav_port = 3;
+    required VersionInfo version_info = 6;
+    repeated ProxyLineInfo line_info = 8;
+    required string game_presets_json = 10;
+    required string login_msg = 13;
+    required string login_url = 14;
+}
+
+service Fox {
+    rpc GetNavInfo(GetNavInfoRequest) returns (GetNavInfoResponse) { 
+        option (msg_tag) = { req:0x03E8 resp:0x03E9 };
+    }
+}

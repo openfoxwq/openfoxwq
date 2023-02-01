@@ -1,0 +1,112 @@
+syntax = "proto2";
+package openfoxwq;
+
+import "proto/common.proto";
+import "proto/fox.proto";
+import "proto/nav.proto";
+import "proto/broadcast.proto";
+import "proto/play.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message WsLoginRequest {
+    required string username = 1;
+    required string password = 2;
+}
+
+message WsGetInitDataRequest {
+}
+
+message WsEnterRoomRequest {
+    oneof room {
+        int64 broadcast_id = 1;
+        RoomId room_id = 2;
+    }
+}
+
+message WsLeaveRoomRequest {
+    oneof room {
+        int64 broadcast_id = 1;
+        RoomId room_id = 2;
+    }
+}
+
+message WsGetPlayerInfoRequest {
+    oneof info {
+        string name = 1;
+        int64 id = 2;
+    }
+}
+
+message WsStartAutomatchRequest {
+    required int64 preset_id = 1;
+}
+
+message WsStopAutomatchRequest {
+}
+
+message WsMoveRequest {
+    required int64 room_id_2 = 1;
+    required MoveRequest move = 2;
+}
+
+message WsSyncMatchTime {
+    required int64 room_id_2 = 1;
+    required int64 ts = 2;
+}
+
+message WsRequest {
+    oneof req {
+        WsLoginRequest login = 1;
+        WsGetInitDataRequest getInitData = 2;
+        WsEnterRoomRequest enterRoom = 3;
+        WsLeaveRoomRequest leaveRoom = 4;
+        WsGetPlayerInfoRequest getPlayerInfo = 5;
+        WsStartAutomatchRequest startAutomatch = 6;
+        WsStopAutomatchRequest stopAutomatch = 7;
+        WsMoveRequest move = 8;
+        WsSyncMatchTime syncMatchTime = 9;
+    }
+}
+
+message WsNextMoveResponse {
+    required int64 room_id_2 = 1;
+    required NextMoveEvent event = 2;
+}
+
+message WsSyncMatchTimeResponse {
+    required int64 room_id_2 = 1;
+    required SyncMatchTimeResponse sync_info = 2;
+}
+
+message WsGameResultResponse {
+    required int64 room_id_2 = 1;
+    required GameResultEvent result = 2;
+}
+
+message WsResponse {
+    oneof resp {
+        GetNavInfoResponse navInfo = 1;
+        LobbySvrInfo serverInfo = 2;
+        LoginResponse login = 3;
+        ListPlayersResponse listPlayers = 4; 
+        ListBroadcastsResponse listBroadcasts = 5;
+        BroadcastSettingEvent broadcastSettingEvent = 6;
+        BroadcastStateEvent broadcastStateEvent = 7;
+        BroadcastMoveEvent broadcastMoveEvent = 8;
+        BroadcastGameResultEvent broadcastGameResultEvent = 9;
+        BroadcastTimeControlEvent broadcastTimeControlEvent = 10;
+        PlayerOnlineCountEvent playerOnlineCountEvent = 11;
+        PlayerOnlineEvent playerOnlineEvent = 12;
+        PlayerOfflineEvent playerOfflineEvent = 13;
+        PlayerStateEvent playerStateEvent = 14;
+        GetPlayerInfoResponse getPlayerInfo = 15;
+        GetAutomatchStatsResponse getAutomatchStats = 16;
+        MatchStartEvent matchStartEvent = 17;
+        WsNextMoveResponse nextMove = 18;
+        EnterRoomResponse enterRoom = 19;
+        WsSyncMatchTimeResponse syncMatchTime = 20;
+        WsGameResultResponse gameResult = 21;
+    }
+}
+

@@ -1,0 +1,637 @@
+syntax = "proto2";
+package openfoxwq;
+
+import "google/protobuf/empty.proto";
+import "proto/reqOption.proto";
+import "proto/common.proto";
+
+option go_package = "github.com/ale64bit/openfoxwq/proto";
+
+message LoginPlayServerRequest {
+    required bytes token = 1;
+}
+
+message LoginPlayServerResponse {
+    optional int64 unknown_field_1 = 1;
+    optional int64 unknown_field_2 = 2; // same as ExtendedMessageHeader.unknown_field_7
+    optional int64 unknown_field_3 = 3; // same as ExtendedMessageHeader.unknown_field_8
+    optional int64 unknown_field_4 = 4; // same as ExtendedMessageHeader.unknown_field_4
+}
+
+message ListPlayersRequest {
+    required int64 unknown_field_1 = 1; // sample value: 1
+}
+
+message ListPlayersResponse {
+    repeated PlayerInfo players = 2;
+    required int64 page_index = 3;
+    required int64 page_count = 4;
+    optional int64 online_count = 5; // only present in last page
+
+    // Unknown fields
+    optional int64 unknown_field_1 = 1; // sample value: 0
+    optional int64 unknown_field_6 = 6; // sample value: 1
+}
+
+message GetPlayerInfoRequest {
+    optional int64 player_id = 1;
+    optional string player_name = 2;
+    required InfoOptions info_options = 3;
+}
+
+message GetPlayerInfoResponse {
+    message RegisterInfo {
+        required int64 player_id = 1;
+        required string name_native = 4;
+        required string name = 5;
+        required Country country = 7;
+        required int64 member_since_unix_ts = 8;
+    }
+
+    message RecentRecord {
+        // rank up/down requirements?
+        message Unknown1 {}
+
+        optional Unknown1 unknown_field_1 = 1;
+        optional string streak = 2; 
+        optional string unknown_field_3 = 3; 
+    }
+
+    message OverallResults {
+        optional int64 rating = 1;
+        optional int64 wr = 2;
+        optional int64 stamina = 3;
+    }
+
+    message ProInfo {
+        optional int64 unknown_field_1 = 1;
+        optional int64 unknown_field_2 = 2;
+        optional string name1 = 3;
+        optional string name2 = 4;
+        optional Rank rank = 5;
+        optional int64 association = 6; // some of them match country, e.g. 86
+    }
+
+    message PerformanceRecord {
+        optional Rank rank = 1;
+        optional int64 wr = 2;
+        optional int64 stamina = 3;
+        optional int64 foxcoin = 5;
+    }
+
+    enum ResultsType {
+        OVERALL = 0;
+        FREE = 1;
+        RANKED = 2;
+        UNKNOWN = 4;
+        CURRENT = 5;
+    }
+
+    message Results {
+        required ResultsType type = 1;
+        required int64 wins = 2;
+        required int64 losses = 3;
+        required int64 draws = 4;
+    }
+
+    message Rooms {
+        message Room {
+            message ShortPlayerInfo {
+                optional int64 player_id = 1;
+                optional Rank rank = 2;
+                optional Country country = 3;
+                optional string name4 = 4;
+                optional string name5 = 5;
+            }
+
+            optional RoomId id = 1;
+            optional int64 unknown_field_2 = 2; // 1 == watch, 2 == match ?
+            optional ShortPlayerInfo player1 = 3;
+            optional ShortPlayerInfo player2 = 4;
+        }
+
+        repeated Room rooms = 1;
+        optional int64 unknown_field_2 = 2;
+        optional int64 unknown_field_3 = 3;
+        optional int64 unknown_field_4 = 4;
+    }
+
+    message AdditionalInfo {
+        optional int64 unknown_field_1 = 1;
+        optional int64 unknown_field_2 = 2;
+        optional string unknown_field_3 = 3;
+        optional string unknown_field_4 = 4;
+    }
+
+    required int64 error_code = 1;
+    required InfoOptions info_options = 2;
+    optional int64 seached_player_id = 3;
+    optional string searched_player_name = 4;
+    optional int64 player_id = 5;
+    optional int64 foxcoin = 6;
+    optional Rank rank = 7;
+    optional RegisterInfo register_info = 8;
+    optional RecentRecord recent_record = 9;
+    optional OverallResults overall_results = 12;
+    optional ProInfo pro_info = 15;
+    optional PerformanceRecord perf_record = 18;
+    repeated Results results = 16;
+    optional Rooms rooms = 20;
+    optional AdditionalInfo additional_info = 22;
+}
+
+message InfoOptions {
+    required int64 unknown_field_1 = 1; // sample value: 11
+    optional int64 unknown_field_2 = 2; // sample value: 0
+}
+
+message SyncTimeRequest {
+    required int64 unix_ts = 1;
+}
+
+message SyncTimeResponse {
+    required int64 unix_ts = 1;
+    required int64 unix_ts_us = 2;
+}
+
+message SyncPlayersRequest {
+    required int64 unknown_field_1 = 1; // sample value: 1
+}
+
+message SyncPlayersResponse {
+    required int64 unknown_field_1 = 1; // sample value: 1
+    required int64 unknown_field_2 = 2; // sample value: 0
+}
+
+message PlayerStateEvent {
+    required PlayerInfo player_info = 1;
+    required int64 online_count = 2;
+
+    optional int64 unknown_field_3 = 3; // sample value: 1
+}
+
+message PlayerOnlineCountEvent {
+    optional int64 unknown_field_1 = 1; // sample value: 1
+    required int64 online_count = 2;
+}
+
+message PlayerOnlineEvent {
+    required PlayerInfo player_info = 1;
+    required int64 online_count = 2;
+
+    optional int64 unknown_field_3 = 3; // sample value: 1
+}
+
+message PlayerOfflineEvent {
+    required int64 player_id = 1;
+    required int64 online_count = 2;
+
+    optional int64 unknown_field_3 = 3; // sample value: 1
+}
+
+message UnknownPlayRequest1 {
+    message UnknownPlayRequest1Nested1 {
+        required string mac_address = 1; 
+    }
+    required UnknownPlayRequest1Nested1 unknown_field_1 = 1;
+    required int64 unknown_field_2 = 2; // sample value: 2
+}
+
+message UnknownPlayResponse1 {
+    optional int64 unknown_field_1 = 1; // sample value: 0
+}
+
+message GetRoomInfoRequest {
+    required RoomId id = 1;
+}
+
+message GetRoomInfoResponse {
+    message Unknown2 {
+        optional int64 unknown_field_1 = 1; // sample values: 30017
+        optional int64 unknown_field_2 = 2; // sample values: 1, 3, 4, 5
+    }
+
+    message PlayerEntry {
+        optional int64 id = 1;
+        optional string name = 2;
+        optional Rank rank = 3;
+        optional int64 main_time = 9;
+        optional int64 byoyomi_periods = 10;
+        optional int64 byoyomi_time = 11;
+        optional string avatar_url = 13;
+        optional Country country = 15;
+        optional string name_alt = 16;
+    }
+
+    message RoomSettings {
+        optional int64 board_size = 1;
+        optional int64 komi = 4;
+        optional int64 player_id_1 = 5;
+        optional int64 main_time = 6;
+        optional int64 byoyomi_time = 7;
+        optional int64 byoyomi_periods = 8;
+        optional int64 player_id_2 = 26;
+    }
+
+    message Unknown5 {}
+
+    message RoomInfo {
+        optional RoomId id = 1;
+        repeated PlayerEntry players = 2;
+        optional RoomSettings settings = 3;
+        optional int64 unknown_field_4 = 4;
+        optional Unknown5 unknown_field_5 = 5;
+        optional int64 ts_unix = 6;
+        optional int64 ts_unix_ns = 12;
+    }
+
+    optional int64 error_code = 1;
+    repeated Unknown2 unknown_field_2 = 2;
+    optional RoomInfo room_info = 3;
+}
+
+message GetAutomatchStatsRequest {
+}
+
+message GetAutomatchStatsResponse {
+    optional int64 error_code = 1;
+    map<int64, int64> population = 2; 
+}
+
+message StartAutomatchRequest {
+    required int64 preset_id = 1;
+    optional int64 unknown_field_2 = 2;
+}
+
+message StartAutomatchResponse {
+    optional int64 error_code = 1;
+    optional int64 unknown_field_2 = 2;
+    optional int64 unknown_field_3 = 3;
+}
+
+message StopAutomatchRequest {}
+
+message StopAutomatchResponse {
+    optional int64 error_code = 1;
+}
+
+message AutomatchFoundEvent {
+    message RoomParticipant {
+        required int64 player_id = 1;
+        optional string name = 3;
+        optional Rank rank = 4;
+        optional string avatar_url = 18;
+    }
+
+    optional int64 error_code = 1;
+    optional int64 room_id_1 = 2;
+    optional int64 room_id_2 = 3;
+    optional int64 room_id_3 = 4;
+    repeated RoomParticipant participants = 5;
+    optional int64 unknown_field_6 = 6;
+}
+
+message AcceptMatchRequest {
+}
+
+message AcceptMatchResponse {
+    optional int64 error_code = 1;
+}
+
+message MatchStartEvent {
+    message MatchInfo {
+        optional int64 board_size = 1;
+        optional int64 player_id_black = 5;
+        optional int64 main_time_sec = 6;
+        optional int64 byoyomi_time_sec = 7;
+        optional int64 byoyomi_periods = 8;
+        optional int64 player_id_white = 26;
+    }
+    message MatchPlayerInfo {
+        optional int64 player_id = 1;
+        optional string name = 3;
+        optional Rank rank = 4;
+        optional Country country = 20;
+    }
+    message AutomatchPreset {
+        optional int64 id = 1;
+        optional int64 board_size = 2;
+        optional int64 main_time_sec = 3;
+        optional int64 byoyomi_periods = 4;
+        optional int64 byoyomi_time_sec = 5;
+        optional bool chinese_rules = 6;
+        optional int64 min_duan = 7;
+        optional int64 max_duan = 8;
+    }
+
+    optional MatchInfo match_info = 1;
+    optional int64 unknown_field_2 = 2;
+    optional int64 unix_ts_nanos = 3;
+    optional int64 unknown_field_4 = 4;
+    optional int64 unknown_field_6 = 6;
+    optional int64 unix_ts = 7;
+    optional string unix_ts_nanos_str = 8;
+    repeated MatchPlayerInfo players = 9;
+    optional int64 room_id_1 = 11;
+    optional int64 room_id_2 = 12;
+    optional int64 room_id_3 = 14;
+    optional int64 room_id_4 = 13;
+    optional int64 automatch_preset_id = 15;
+    optional AutomatchPreset automatch_preset = 17;
+}
+
+message HeartbeatInfo {
+    optional int64 unknown_field_1 = 1; // goes into header.tag2
+    optional int64 unknown_field_2 = 2; // goes into header.8
+}
+
+message EnterRoomRequest {
+    required RoomId id = 1;
+}
+
+message EnterRoomResponse {
+    optional int64 error_code = 1;
+    optional RoomId room_id = 2;
+    optional HeartbeatInfo heartbeat_info = 3;
+}
+
+message LeaveRoomRequest {
+    required RoomId id = 1;
+}
+
+message LeaveRoomResponse {
+    optional int64 error_code = 1;
+    optional RoomId room_id = 2;
+}
+
+message ListRoomParticipantsRequest {
+    required RoomId id = 1;
+    required int64 player_id_1 = 2;
+    required int64 player_id_2 = 3;
+}
+
+message ListRoomParticipantsResponse {
+    message RoomParticipantInfo {
+        optional int64 player_id = 1;
+        optional string name = 2;
+        optional string name_alt = 3;
+        optional Rank rank = 4;
+        optional Country country = 9;
+    }
+
+    optional int64 error_code = 1;
+    optional RoomId id = 2;
+    repeated RoomParticipantInfo participants = 3;
+    optional int64 participant_count = 5;
+}
+
+// message RoomHeartbeatRequest {
+//     optional RoomId id = 2;
+// }
+// 
+// message RoomHeartbeatResponse {
+//     optional int64 error_code = 1;
+//     optional int64 unknown_field_2 = 2;
+//     optional RoomId id = 3;
+// }
+
+message LastTurnInfo {
+    optional int64 move_count = 1;
+}
+
+message MoveRequest {
+    required int64 x = 1;
+    required int64 y = 2;
+    required Color col = 3;
+    required LastTurnInfo last_turn = 4;
+}
+
+message MoveResponse {
+    optional int64 error_code = 1;
+}
+
+message PassRequest {
+    required LastTurnInfo last_turn = 1;
+}
+
+message PassResponse {
+    optional int64 error_code = 1;
+}
+
+message SyncMatchTimeRequest {
+    required int64 ts = 1;
+}
+
+message SyncMatchTimeResponse {
+    message ElapsedInfo {
+        optional int64 time_elapsed_sec = 1; // monotonic inc.
+    }
+
+    required int64 ts = 1;
+    optional int64 server_ts = 2;
+    optional ElapsedInfo elapsed_info = 3;
+    optional RoomId room_id = 4;
+
+}
+
+message MatchPlayerTimeState {
+    optional int64 unknown_field_1 = 1;
+    required int64 main_time_left_sec = 2;
+    required int64 byoyomi_periods_left = 3;
+    optional int64 byoyomi_duration_sec = 4;
+    required int64 player_id = 5;
+    optional int64 disconnected_time_left_sec = 6;
+}
+
+message NextMoveEvent {
+    optional int64 x = 1;
+    optional int64 y = 2;
+    optional Color col = 3;
+    optional MatchPlayerTimeState time_state = 4;
+    optional LastTurnInfo last_turn = 5;
+    optional int64 player_id = 6;
+    optional int64 ts = 7;
+}
+
+message PassEvent {
+    optional MatchPlayerTimeState time_state = 1;
+    optional LastTurnInfo last_turn = 2;
+    optional int64 player_id = 3;
+    optional int64 unknown_field_4 = 4;
+}
+
+message CountdownEvent {
+    optional int64 unknown_field_1 = 1;
+    required int64 main_time_left_sec = 2;
+    required int64 byoyomi_periods_left = 3;
+    optional int64 byoyomi_time_left_sec = 4;
+    required int64 player_id = 5;
+    optional int64 unknown_field_6 = 6;
+}
+
+message ResumeCountdownEvent {
+    optional int64 unknown_field_1 = 1;
+    required CountdownEvent countdown = 2;
+}
+
+message RequestCountingRequest {
+    optional int64 unknown_field_1 = 1;
+}
+
+message RequestCountingResponse {
+    optional int64 error_code = 1;
+}
+
+message SendCountingDecisionResponse {
+    optional int64 error_code = 1;
+}
+
+enum CountingStage {
+    AGREE_TO_COUNT = 1;
+    AGREE_WITH_COUNT_RESULT = 2;
+}
+
+message CountingDecision {
+    required bool agree = 1;
+    required CountingStage stage = 2;
+}
+
+message CountingResultEvent {
+    // TODO decode
+}
+
+message ResignRequest {
+    optional int64 unknown_field_1 = 1;
+}
+
+message ResignResponse {
+    optional int64 unknown_field_1 = 1;
+}
+
+message GameResultEvent {
+    optional int64 unknown_field_1 = 1;
+    required Color winner = 2;
+    required int64 score_lead = 3;
+    optional int64 unknown_field_4 = 4;
+    optional string message = 5;
+    optional int64 ts_10 = 10;
+    optional int64 ts_12 = 12;
+    optional int64 ts_13 = 13;
+}
+
+service Play {
+    // Auth
+    rpc Login(LoginPlayServerRequest) returns (LoginPlayServerResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0001 tag2:0x4E21 unknown_field_5:32 unknown_field_6:6 } };
+    }
+
+    // Player
+    rpc ListPlayers(ListPlayersRequest) returns (stream ListPlayersResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00C9 tag2:0x4E4E unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc GetPlayerInfo(GetPlayerInfoRequest) returns (GetPlayerInfoResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x03E9 tag2:0x4E4B unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc SyncPlayers(SyncPlayersRequest) returns (SyncPlayersResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00CB tag2:0x4E4E unknown_field_5:32 unknown_field_6:6 unknown_field_8:3 } };
+    }
+
+    // Room
+    rpc GetRoomInfo(GetRoomInfoRequest) returns (GetRoomInfoResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x007A tag2:0x7540 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc EnterRoom(EnterRoomRequest) returns (EnterRoomResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0064 tag2:0x7545 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc LeaveRoom(LeaveRoomRequest) returns (LeaveRoomResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0065 tag2:0x7546 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc ListRoomParticipants(ListRoomParticipantsRequest) returns (ListRoomParticipantsResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0064 tag2:0x755A unknown_field_5:32 unknown_field_6:6 } };
+    }
+
+    // Player events
+    rpc ListenPlayerOnlineCountEvents(google.protobuf.Empty) returns (stream PlayerOnlineCountEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0191 tag2:0x4E4E } };
+    }
+    rpc ListenPlayerOnlineEvents(google.protobuf.Empty) returns (stream PlayerOnlineEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0192 tag2:0x4E4E } };
+    }
+    rpc ListenPlayerOfflineEvents(google.protobuf.Empty) returns (stream PlayerOfflineEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0193 tag2:0x4E4E } };
+    }
+    rpc ListenPlayerStateEvents(google.protobuf.Empty) returns (stream PlayerStateEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0194 tag2:0x4E4E } };
+    }
+
+    // Automatch
+    rpc GetAutomatchStats(GetAutomatchStatsRequest) returns (GetAutomatchStatsResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x18731 tag2:0x7536 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc StartAutomatch(StartAutomatchRequest) returns (StartAutomatchResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x18722 tag2:0x7536 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc ListenAutomatchFoundEvents(google.protobuf.Empty) returns (stream AutomatchFoundEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x1872C tag2:0x7536 } };
+    }
+    rpc StopAutomatch(StopAutomatchRequest) returns (StopAutomatchResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x1872B tag2:0x7536 unknown_field_5:32 unknown_field_6:6 } };
+    }
+
+    // Match
+    rpc AcceptMatch(AcceptMatchRequest) returns (AcceptMatchResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0069 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc SyncMatchTime(SyncMatchTimeRequest) returns (SyncMatchTimeResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00C8 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc Move(MoveRequest) returns (MoveResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00C9 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc Pass(PassRequest) returns (PassResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00CC tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc RequestCounting(RequestCountingRequest) returns (RequestCountingResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x012D tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc SendCountingDecision(CountingDecision) returns (SendCountingDecisionResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0130 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc Resign(ResignRequest) returns (ResignResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0137 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
+    }
+    rpc ListenMatchStartEvents(google.protobuf.Empty) returns (stream MatchStartEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x006B tag2:0x7918 } };
+    }
+    rpc ListenNextMoveEvents(google.protobuf.Empty) returns (stream NextMoveEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00CB tag2:0x7918 } };
+    }
+    rpc ListenPassEvents(google.protobuf.Empty) returns (stream PassEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x00CE tag2:0x7918 } };
+    }
+    rpc ListenCountdownEvents(google.protobuf.Empty) returns (stream CountdownEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x006C tag2:0x7918 } };
+    }
+    rpc ListenResumeCountdownEvents(google.protobuf.Empty) returns (stream ResumeCountdownEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x006D tag2:0x7918 } };
+    }
+    rpc ListenCountingDecisions(google.protobuf.Empty) returns (stream CountingDecision) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0132 tag2:0x7918 } };
+    }
+    rpc ListenCountingResultEvents(google.protobuf.Empty) returns (stream CountingResultEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x012F tag2:0x7918 } };
+    }
+    rpc ListenGameResultEvents(google.protobuf.Empty) returns (stream GameResultEvent) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0195 tag2:0x7918 } };
+    }
+
+    // Timing
+    rpc SyncTime(SyncTimeRequest) returns (SyncTimeResponse) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0005 tag2:0x4E21 unknown_field_5:32 unknown_field_6:6 unknown_field_8:11 unknown_field_9:1 } };
+    }
+
+    // Others
+    rpc Unknown1(UnknownPlayRequest1) returns (UnknownPlayResponse1) {
+        option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0002 tag2:0x7560 unknown_field_5:32 unknown_field_6:6 unknown_field_8:1 } };
+    }
+}
