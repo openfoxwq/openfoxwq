@@ -3,7 +3,7 @@ package openfoxwq;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "github.com/ale64bit/openfoxwq/proto";
+option go_package = "github.com/openfoxwq/openfoxwq/proto";
 
 // ================================================================================
 // Message Tag Options

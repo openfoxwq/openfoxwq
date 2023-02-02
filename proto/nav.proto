@@ -4,7 +4,7 @@ package openfoxwq;
 import "proto/reqOption.proto";
 import "proto/common.proto";
 
-option go_package = "github.com/ale64bit/openfoxwq/proto";
+option go_package = "github.com/openfoxwq/openfoxwq/proto";
 
 message ListServersRequest {
     required int64 player_id = 1;
