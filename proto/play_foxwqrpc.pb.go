@@ -42,7 +42,7 @@ type PlayClient interface {
 	ListenCountdownEvents(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountdownEvent]], error)
 	ListenResumeCountdownEvents(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *ResumeCountdownEvent]], error)
 	ListenCountingDecisions(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountingDecision]], error)
-	ListenCountingResultEvents(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountingResultEvent]], error)
+	ListenCountingEvents(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountingEvent]], error)
 	ListenGameResultEvents(context.Context, *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *GameResultEvent]], error)
 	SyncTime(context.Context, *MessageHeader, *SyncTimeRequest) (*ExtendedResponse[*MessageHeader, *SyncTimeResponse], error)
 	Unknown1(context.Context, *MessageHeader, *UnknownPlayRequest1) (*ExtendedResponse[*MessageHeader, *UnknownPlayResponse1], error)
@@ -79,7 +79,7 @@ var (
 	play_listenCountdownEventsMsgTag         = &MessageTag{}
 	play_listenResumeCountdownEventsMsgTag   = &MessageTag{}
 	play_listenCountingDecisionsMsgTag       = &MessageTag{}
-	play_listenCountingResultEventsMsgTag    = &MessageTag{}
+	play_listenCountingEventsMsgTag          = &MessageTag{}
 	play_listenGameResultEventsMsgTag        = &MessageTag{}
 	play_syncTimeMsgTag                      = &MessageTag{}
 	play_unknown1MsgTag                      = &MessageTag{}
@@ -173,8 +173,8 @@ func init() {
 	if err := proto.Unmarshal([]byte{0x08, 0xD8, 0xCC, 0x01, 0x10, 0xD8, 0xCC, 0x01, 0x1A, 0x07, 0x08, 0xB2, 0x02, 0x38, 0x98, 0xF2, 0x01}, play_listenCountingDecisionsMsgTag); err != nil {
 		log.Fatalf("loading message tag for method ListenCountingDecisions: %v", err)
 	}
-	if err := proto.Unmarshal([]byte{0x08, 0xD8, 0xCC, 0x01, 0x10, 0xD8, 0xCC, 0x01, 0x1A, 0x07, 0x08, 0xAF, 0x02, 0x38, 0x98, 0xF2, 0x01}, play_listenCountingResultEventsMsgTag); err != nil {
-		log.Fatalf("loading message tag for method ListenCountingResultEvents: %v", err)
+	if err := proto.Unmarshal([]byte{0x08, 0xD8, 0xCC, 0x01, 0x10, 0xD8, 0xCC, 0x01, 0x1A, 0x07, 0x08, 0xAF, 0x02, 0x38, 0x98, 0xF2, 0x01}, play_listenCountingEventsMsgTag); err != nil {
+		log.Fatalf("loading message tag for method ListenCountingEvents: %v", err)
 	}
 	if err := proto.Unmarshal([]byte{0x08, 0xD8, 0xCC, 0x01, 0x10, 0xD8, 0xCC, 0x01, 0x1A, 0x07, 0x08, 0x95, 0x03, 0x38, 0x98, 0xF2, 0x01}, play_listenGameResultEventsMsgTag); err != nil {
 		log.Fatalf("loading message tag for method ListenGameResultEvents: %v", err)
@@ -222,7 +222,7 @@ type playClientImpl struct {
 	listenCountdownEventsRequestCh         chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountdownEvent]]
 	listenResumeCountdownEventsRequestCh   chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *ResumeCountdownEvent]]
 	listenCountingDecisionsRequestCh       chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingDecision]]
-	listenCountingResultEventsRequestCh    chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingResultEvent]]
+	listenCountingEventsRequestCh          chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingEvent]]
 	listenGameResultEventsRequestCh        chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *GameResultEvent]]
 	syncTimeRequestCh                      chan internalUnaryReq[*SyncTimeRequest, *ExtendedResponse[*MessageHeader, *SyncTimeResponse]]
 	unknown1RequestCh                      chan internalUnaryReq[*UnknownPlayRequest1, *ExtendedResponse[*MessageHeader, *UnknownPlayResponse1]]
@@ -300,8 +300,8 @@ func NewPlayClient(addr string, log *log.Logger) (PlayClient, error) {
 	listenResumeCountdownEventsServerStreams := make(map[*serverStreamImpl[*ExtendedResponse[*MessageHeader, *ResumeCountdownEvent]]]struct{})
 	listenCountingDecisionsRequestCh := make(chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingDecision]], 16)
 	listenCountingDecisionsServerStreams := make(map[*serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingDecision]]]struct{})
-	listenCountingResultEventsRequestCh := make(chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingResultEvent]], 16)
-	listenCountingResultEventsServerStreams := make(map[*serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingResultEvent]]]struct{})
+	listenCountingEventsRequestCh := make(chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingEvent]], 16)
+	listenCountingEventsServerStreams := make(map[*serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingEvent]]]struct{})
 	listenGameResultEventsRequestCh := make(chan internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *GameResultEvent]], 16)
 	listenGameResultEventsServerStreams := make(map[*serverStreamImpl[*ExtendedResponse[*MessageHeader, *GameResultEvent]]]struct{})
 	syncTimeRequestCh := make(chan internalUnaryReq[*SyncTimeRequest, *ExtendedResponse[*MessageHeader, *SyncTimeResponse]], 16)
@@ -818,25 +818,25 @@ func NewPlayClient(addr string, log *log.Logger) (PlayClient, error) {
 							delete(listenCountingDecisionsServerStreams, stream)
 						}
 					case hdr.GetTag1() == 303 && hdr.GetTag2() == 31000:
-						resp := &CountingResultEvent{}
+						resp := &CountingEvent{}
 						if err := proto.Unmarshal(payload, resp); err != nil {
-							log.Printf("unmarshalling CountingResultEvent response: %v\n\tframe: %04X%s", err, len(frame), hex.EncodeToString(frame))
+							log.Printf("unmarshalling CountingEvent response: %v\n\tframe: %04X%s", err, len(frame), hex.EncodeToString(frame))
 							routerErr = err
 							continue
 						}
-						if len(listenCountingResultEventsServerStreams) == 0 {
+						if len(listenCountingEventsServerStreams) == 0 {
 							log.Printf("PlayClient: dead letter: %s { %v }", resp.ProtoReflect().Descriptor().Name(), resp)
 						}
-						var closedStreams []*serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingResultEvent]]
-						for stream := range listenCountingResultEventsServerStreams {
+						var closedStreams []*serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingEvent]]
+						for stream := range listenCountingEventsServerStreams {
 							select {
 							case <-stream.closeCh:
 								closedStreams = append(closedStreams, stream)
-							case stream.respCh <- &ExtendedResponse[*MessageHeader, *CountingResultEvent]{Header: hdr, Resp: resp}:
+							case stream.respCh <- &ExtendedResponse[*MessageHeader, *CountingEvent]{Header: hdr, Resp: resp}:
 							}
 						}
 						for _, stream := range closedStreams {
-							delete(listenCountingResultEventsServerStreams, stream)
+							delete(listenCountingEventsServerStreams, stream)
 						}
 					case hdr.GetTag1() == 405 && hdr.GetTag2() == 31000:
 						resp := &GameResultEvent{}
@@ -1146,11 +1146,11 @@ func NewPlayClient(addr string, log *log.Logger) (PlayClient, error) {
 					rr.errCh <- routerErr
 				}
 				listenCountingDecisionsServerStreams[rr.stream] = struct{}{}
-			case rr := <-listenCountingResultEventsRequestCh:
+			case rr := <-listenCountingEventsRequestCh:
 				if routerErr != nil {
 					rr.errCh <- routerErr
 				}
-				listenCountingResultEventsServerStreams[rr.stream] = struct{}{}
+				listenCountingEventsServerStreams[rr.stream] = struct{}{}
 			case rr := <-listenGameResultEventsRequestCh:
 				if routerErr != nil {
 					rr.errCh <- routerErr
@@ -1216,7 +1216,7 @@ func NewPlayClient(addr string, log *log.Logger) (PlayClient, error) {
 		listenCountdownEventsRequestCh:         listenCountdownEventsRequestCh,
 		listenResumeCountdownEventsRequestCh:   listenResumeCountdownEventsRequestCh,
 		listenCountingDecisionsRequestCh:       listenCountingDecisionsRequestCh,
-		listenCountingResultEventsRequestCh:    listenCountingResultEventsRequestCh,
+		listenCountingEventsRequestCh:          listenCountingEventsRequestCh,
 		listenGameResultEventsRequestCh:        listenGameResultEventsRequestCh,
 		syncTimeRequestCh:                      syncTimeRequestCh,
 		unknown1RequestCh:                      unknown1RequestCh,
@@ -1770,18 +1770,18 @@ func (c *playClientImpl) ListenCountingDecisions(_ context.Context, hdr *Message
 	}
 }
 
-func (c *playClientImpl) ListenCountingResultEvents(_ context.Context, hdr *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountingResultEvent]], error) {
-	stream := &serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingResultEvent]]{
-		respCh:  make(chan *ExtendedResponse[*MessageHeader, *CountingResultEvent], 8),
+func (c *playClientImpl) ListenCountingEvents(_ context.Context, hdr *MessageHeader) (ServerStream[*ExtendedResponse[*MessageHeader, *CountingEvent]], error) {
+	stream := &serverStreamImpl[*ExtendedResponse[*MessageHeader, *CountingEvent]]{
+		respCh:  make(chan *ExtendedResponse[*MessageHeader, *CountingEvent], 8),
 		closeCh: make(chan struct{}),
 	}
-	rr := internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingResultEvent]]{
+	rr := internalServerStreamingReq[proto.Message, *ExtendedResponse[*MessageHeader, *CountingEvent]]{
 		hdr:    hdr,
 		stream: stream,
 		errCh:  make(chan error),
 	}
 	defer close(rr.errCh)
-	c.listenCountingResultEventsRequestCh <- rr
+	c.listenCountingEventsRequestCh <- rr
 	select {
 	case err := <-rr.errCh:
 		return nil, err

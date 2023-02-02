@@ -52,7 +52,7 @@ message LobbySvrInfo {
     map<int32, string> name_loc = 23;
 
     // Unknown fields
-    optional int64 unknown_field_7 = 7; // sample value: 86
+    optional int64 unknown_field_7 = 7; // sample value: 86 (China?)
     optional int64 unknown_field_8 = 8; // sample value: 50800, max players?
 }
 
@@ -113,14 +113,18 @@ enum Country {
     RUSSIA = 7;
     SOUTHAFRICA = 27;
     NETHERLANDS = 31;
+    GREECE = 30;
     FRANCE = 33;
+    HUNGARY = 36;
     ITALY = 39;
     UK = 44;
     SWEDEN = 46;
     GERMANY = 49;
     CHILE = 56;
     PHILIPPINES = 63;
+    NEWZEALAND = 64;
     SINGAPORE = 65;
+    THAILAND = 66;
     JAPAN = 81;
     TAIWAN = 83;
     KOREA = 82;

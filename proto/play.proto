@@ -376,6 +376,8 @@ message ListRoomParticipantsResponse {
         optional string name = 2;
         optional string name_alt = 3;
         optional Rank rank = 4;
+        optional int64 wins = 5;
+        optional int64 losses = 6;
         optional Country country = 9;
     }
 
@@ -384,16 +386,6 @@ message ListRoomParticipantsResponse {
     repeated RoomParticipantInfo participants = 3;
     optional int64 participant_count = 5;
 }
-
-// message RoomHeartbeatRequest {
-//     optional RoomId id = 2;
-// }
-// 
-// message RoomHeartbeatResponse {
-//     optional int64 error_code = 1;
-//     optional int64 unknown_field_2 = 2;
-//     optional RoomId id = 3;
-// }
 
 message LastTurnInfo {
     optional int64 move_count = 1;
@@ -487,8 +479,9 @@ message SendCountingDecisionResponse {
 }
 
 enum CountingStage {
-    AGREE_TO_COUNT = 1;
-    AGREE_WITH_COUNT_RESULT = 2;
+    STAGE_UNKNOWN = 0;
+    STAGE_AGREE_TO_COUNT = 1;
+    STAGE_AGREE_WITH_COUNT_RESULT = 2;
 }
 
 message CountingDecision {
@@ -496,7 +489,15 @@ message CountingDecision {
     required CountingStage stage = 2;
 }
 
-message CountingResultEvent {
+message CountingEvent {
+    optional int64 unknown_field_1 = 1;
+    required CountingStage stage = 2;
+    optional bytes unknown_field_4 = 4;
+    optional string ownership = 5;
+    optional float unknown_field_6 = 6;
+    optional Color winner = 8;
+    optional float score_lead = 9;
+    required int64 time_left = 7;
     // TODO decode
 }
 
@@ -600,6 +601,8 @@ service Play {
     rpc Resign(ResignRequest) returns (ResignResponse) {
         option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0137 tag2:0x7918 unknown_field_5:32 unknown_field_6:6 } };
     }
+
+    // Match events
     rpc ListenMatchStartEvents(google.protobuf.Empty) returns (stream MatchStartEvent) {
         option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x006B tag2:0x7918 } };
     }
@@ -618,7 +621,7 @@ service Play {
     rpc ListenCountingDecisions(google.protobuf.Empty) returns (stream CountingDecision) {
         option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x0132 tag2:0x7918 } };
     }
-    rpc ListenCountingResultEvents(google.protobuf.Empty) returns (stream CountingResultEvent) {
+    rpc ListenCountingEvents(google.protobuf.Empty) returns (stream CountingEvent) {
         option (msg_tag) = { req:0x6658 resp:0x6658 header:{ tag1:0x012F tag2:0x7918 } };
     }
     rpc ListenGameResultEvents(google.protobuf.Empty) returns (stream GameResultEvent) {

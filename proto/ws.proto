@@ -45,14 +45,32 @@ message WsStartAutomatchRequest {
 message WsStopAutomatchRequest {
 }
 
+message WsSyncMatchTime {
+    required int64 room_id_2 = 1;
+    required int64 ts = 2;
+}
+
 message WsMoveRequest {
     required int64 room_id_2 = 1;
     required MoveRequest move = 2;
 }
 
-message WsSyncMatchTime {
+message WsPassRequest {
     required int64 room_id_2 = 1;
-    required int64 ts = 2;
+    required PassRequest pass = 2;
+}
+
+message WsResignRequest {
+    required int64 room_id_2 = 1;
+}
+
+message WsRequestCountingRequest {
+    required int64 room_id_2 = 1;
+}
+
+message WsSendCountingDecisionRequest {
+    required int64 room_id_2 = 1;
+    required CountingDecision decision = 2;
 }
 
 message WsRequest {
@@ -64,14 +82,14 @@ message WsRequest {
         WsGetPlayerInfoRequest getPlayerInfo = 5;
         WsStartAutomatchRequest startAutomatch = 6;
         WsStopAutomatchRequest stopAutomatch = 7;
-        WsMoveRequest move = 8;
-        WsSyncMatchTime syncMatchTime = 9;
+        WsSyncMatchTime syncMatchTime = 8;
+        WsMoveRequest move = 9;
+        WsPassRequest pass = 10;
+        WsResignRequest resign = 11;
+        WsRequestCountingRequest requestCounting = 12;
+        WsSendCountingDecisionRequest countingDecision = 13;
+        ListRoomParticipantsRequest listRoomParticipants = 14;
     }
-}
-
-message WsNextMoveResponse {
-    required int64 room_id_2 = 1;
-    required NextMoveEvent event = 2;
 }
 
 message WsSyncMatchTimeResponse {
@@ -79,34 +97,77 @@ message WsSyncMatchTimeResponse {
     required SyncMatchTimeResponse sync_info = 2;
 }
 
-message WsGameResultResponse {
+message WsNextMoveEvent {
     required int64 room_id_2 = 1;
-    required GameResultEvent result = 2;
+    required NextMoveEvent event = 2;
+}
+
+message WsPassEvent {
+    required int64 room_id_2 = 1;
+    required PassEvent event = 2;
+}
+
+message WsCountdownEvent {
+    required int64 room_id_2 = 1;
+    required CountdownEvent event = 2;
+}
+
+message WsResumeCountdownEvent {
+    required int64 room_id_2 = 1;
+    required ResumeCountdownEvent event = 2;
+}
+
+message WsCountingDecision {
+    required int64 room_id_2 = 1;
+    required CountingDecision decision = 2;
+}
+
+message WsCountingEvent {
+    required int64 room_id_2 = 1;
+    required CountingEvent event = 2;
+}
+
+message WsGameResultEvent {
+    required int64 room_id_2 = 1;
+    required GameResultEvent event = 2;
 }
 
 message WsResponse {
     oneof resp {
+        // Server and navigation info
         GetNavInfoResponse navInfo = 1;
         LobbySvrInfo serverInfo = 2;
         LoginResponse login = 3;
+        // List responses
         ListPlayersResponse listPlayers = 4; 
         ListBroadcastsResponse listBroadcasts = 5;
-        BroadcastSettingEvent broadcastSettingEvent = 6;
-        BroadcastStateEvent broadcastStateEvent = 7;
-        BroadcastMoveEvent broadcastMoveEvent = 8;
-        BroadcastGameResultEvent broadcastGameResultEvent = 9;
-        BroadcastTimeControlEvent broadcastTimeControlEvent = 10;
-        PlayerOnlineCountEvent playerOnlineCountEvent = 11;
-        PlayerOnlineEvent playerOnlineEvent = 12;
-        PlayerOfflineEvent playerOfflineEvent = 13;
-        PlayerStateEvent playerStateEvent = 14;
-        GetPlayerInfoResponse getPlayerInfo = 15;
-        GetAutomatchStatsResponse getAutomatchStats = 16;
-        MatchStartEvent matchStartEvent = 17;
-        WsNextMoveResponse nextMove = 18;
-        EnterRoomResponse enterRoom = 19;
-        WsSyncMatchTimeResponse syncMatchTime = 20;
-        WsGameResultResponse gameResult = 21;
+        ListRoomParticipantsResponse listRoomParticipants = 6;
+        // Broadcast events
+        BroadcastSettingEvent broadcastSettingEvent = 7;
+        BroadcastStateEvent broadcastStateEvent = 8;
+        BroadcastMoveEvent broadcastMoveEvent = 9;
+        BroadcastGameResultEvent broadcastGameResultEvent = 10;
+        BroadcastTimeControlEvent broadcastTimeControlEvent = 11;
+        // Player events
+        PlayerOnlineCountEvent playerOnlineCountEvent = 12;
+        PlayerOnlineEvent playerOnlineEvent = 13;
+        PlayerOfflineEvent playerOfflineEvent = 14;
+        PlayerStateEvent playerStateEvent = 15;
+        // Player and automatch preset info
+        GetPlayerInfoResponse getPlayerInfo = 16;
+        GetAutomatchStatsResponse getAutomatchStats = 17;
+        // Match setup
+        EnterRoomResponse enterRoom = 18;
+        WsSyncMatchTimeResponse syncMatchTime = 19;
+        // Match events
+        MatchStartEvent matchStartEvent = 20;
+        WsNextMoveEvent nextMoveEvent = 21;
+        WsPassEvent passEvent = 22;
+        WsCountdownEvent countdownEvent = 23;
+        WsResumeCountdownEvent resumeCountdownEvent = 24;
+        WsCountingDecision countingDecision = 25;
+        WsCountingEvent countingEvent = 26;
+        WsGameResultEvent gameResultEvent = 27;
     }
 }
 

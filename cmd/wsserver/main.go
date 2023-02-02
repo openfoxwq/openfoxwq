@@ -16,8 +16,6 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	pb "github.com/openfoxwq/openfoxwq/proto"
-
-	_ "net/http/pprof"
 )
 
 var (
@@ -59,19 +57,19 @@ func broadcastEventHandler(ctx context.Context, bcClient pb.BroadcastClient, res
 	for {
 		select {
 		case evt := <-broadcastSettingStream.Ch():
-			// log.Printf("broadcastroom config event: %v", evt)
+			log.Printf("broadcastroom config event: %v", evt)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_BroadcastSettingEvent{BroadcastSettingEvent: evt}}
 		case evt := <-broadcastStateStream.Ch():
-			// log.Printf("broadcast state event: %v", evt)
+			log.Printf("broadcast state event: %v", evt)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_BroadcastStateEvent{BroadcastStateEvent: evt}}
 		case evt := <-broadcastMoveStream.Ch():
-			// log.Printf("broadcast move event: %v", evt)
+			log.Printf("broadcast move event: %v", evt)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_BroadcastMoveEvent{BroadcastMoveEvent: evt}}
 		case evt := <-broadcastGameResultStream.Ch():
-			// log.Printf("broadcast game result event: %v", evt)
+			log.Printf("broadcast game result event: %v", evt)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_BroadcastGameResultEvent{BroadcastGameResultEvent: evt}}
 		case evt := <-broadcastTimeControlStream.Ch():
-			// log.Printf("broadcast time control event: %v", evt)
+			log.Printf("broadcast time control event: %v", evt)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_BroadcastTimeControlEvent{BroadcastTimeControlEvent: evt}}
 		case <-ctx.Done():
 			return ctx.Err()
@@ -101,16 +99,16 @@ func playerEventHandler(ctx context.Context, playClient pb.PlayClient, respCh ch
 	for {
 		select {
 		case evt := <-playerOnlineCountStream.Ch():
-			// log.Printf("player online count event: %v", evt)
+			log.Printf("player online count event: %v", evt.Resp)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_PlayerOnlineCountEvent{PlayerOnlineCountEvent: evt.Resp}}
 		case evt := <-playerOnlineStream.Ch():
-			// log.Printf("player online event: %v", evt)
+			log.Printf("player online event: %v", evt.Resp)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_PlayerOnlineEvent{PlayerOnlineEvent: evt.Resp}}
 		case evt := <-playerOfflineStream.Ch():
-			// log.Printf("player offline event: %v", evt)
+			log.Printf("player offline event: %v", evt.Resp)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_PlayerOfflineEvent{PlayerOfflineEvent: evt.Resp}}
 		case evt := <-playerStateStream.Ch():
-			// log.Printf("player state event: %v", evt)
+			log.Printf("player state event: %v", evt.Resp)
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_PlayerStateEvent{PlayerStateEvent: evt.Resp}}
 		case <-ctx.Done():
 			return ctx.Err()
@@ -150,7 +148,7 @@ func gameEventHandler(ctx context.Context, playerID int64, playClient pb.PlayCli
 	if err != nil {
 		return fmt.Errorf("listening to counting decision events: %v", err)
 	}
-	countingResultStream, err := playClient.ListenCountingResultEvents(ctx, &pb.MessageHeader{})
+	countingStream, err := playClient.ListenCountingEvents(ctx, &pb.MessageHeader{})
 	if err != nil {
 		return fmt.Errorf("listening to counting result events: %v", err)
 	}
@@ -183,28 +181,58 @@ func gameEventHandler(ctx context.Context, playerID int64, playClient pb.PlayCli
 			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_MatchStartEvent{MatchStartEvent: evt.Resp}}
 		case evt := <-nextMoveStream.Ch():
 			log.Printf("next move event: %v", evt.Resp)
-			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_NextMove{
-				NextMove: &pb.WsNextMoveResponse{
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_NextMoveEvent{
+				NextMoveEvent: &pb.WsNextMoveEvent{
 					RoomId_2: evt.Header.UnknownField_8,
 					Event:    evt.Resp,
 				},
 			}}
 		case evt := <-passStream.Ch():
-			log.Printf("pass event: %v", evt)
-		case evt := <-countdownStream.Ch():
-			log.Printf("countdown event: %v", evt)
-		case evt := <-resumeCountdownStream.Ch():
-			log.Printf("resume countdown event: %v", evt)
-		case evt := <-countingDecisionStream.Ch():
-			log.Printf("counting decision: %v", evt)
-		case evt := <-countingResultStream.Ch():
-			log.Printf("counting result event: %v", evt)
-		case evt := <-gameResultStream.Ch():
-			log.Printf("game result event: %v", evt)
-			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_GameResult{
-				GameResult: &pb.WsGameResultResponse{
+			log.Printf("pass event: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_PassEvent{
+				PassEvent: &pb.WsPassEvent{
 					RoomId_2: evt.Header.UnknownField_8,
-					Result:   evt.Resp,
+					Event:    evt.Resp,
+				},
+			}}
+		case evt := <-countdownStream.Ch():
+			log.Printf("countdown event: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_CountdownEvent{
+				CountdownEvent: &pb.WsCountdownEvent{
+					RoomId_2: evt.Header.UnknownField_8,
+					Event:    evt.Resp,
+				},
+			}}
+		case evt := <-resumeCountdownStream.Ch():
+			log.Printf("resume countdown event: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_ResumeCountdownEvent{
+				ResumeCountdownEvent: &pb.WsResumeCountdownEvent{
+					RoomId_2: evt.Header.UnknownField_8,
+					Event:    evt.Resp,
+				},
+			}}
+		case evt := <-countingDecisionStream.Ch():
+			log.Printf("counting decision: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_CountingDecision{
+				CountingDecision: &pb.WsCountingDecision{
+					RoomId_2: evt.Header.UnknownField_8,
+					Decision: evt.Resp,
+				},
+			}}
+		case evt := <-countingStream.Ch():
+			log.Printf("counting event: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_CountingEvent{
+				CountingEvent: &pb.WsCountingEvent{
+					RoomId_2: evt.Header.UnknownField_8,
+					Event:    evt.Resp,
+				},
+			}}
+		case evt := <-gameResultStream.Ch():
+			log.Printf("game result event: %v", evt.Resp)
+			respCh <- &pb.WsResponse{Resp: &pb.WsResponse_GameResultEvent{
+				GameResultEvent: &pb.WsGameResultEvent{
+					RoomId_2: evt.Header.UnknownField_8,
+					Event:    evt.Resp,
 				},
 			}}
 		case <-ctx.Done():
@@ -325,7 +353,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalf("unmarshalling message: %v", err)
 		}
 
-		log.Printf("[ws] req: %v", msg)
+		// Don't log the login request since it contains the plain text password
+		switch req := msg.Req.(type) {
+		case *pb.WsRequest_Login:
+			log.Printf("[ws] req: login:{ username:%q }", req.Login.GetUsername())
+		default:
+			log.Printf("[ws] req: %v", msg)
+		}
+
 		switch req := msg.Req.(type) {
 		case *pb.WsRequest_Login:
 			passwordHash := md5.Sum([]byte(req.Login.GetPassword()))
@@ -561,49 +596,39 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		case *pb.WsRequest_LeaveRoom:
-			switch room := req.LeaveRoom.Room.(type) {
-			case *pb.WsLeaveRoomRequest_BroadcastId:
-				resp, err := bcClient.LeaveBroadcast(ctx, &pb.LeaveBroadcastRequest{
-					PlayerId:    loginInfo.PlayerId,
-					BroadcastId: proto.Int64(int64(room.BroadcastId)),
-				})
-				if err != nil {
-					log.Printf("leaving broadcast: %v", err)
+			go func(req *pb.WsLeaveRoomRequest) {
+				switch room := req.Room.(type) {
+				case *pb.WsLeaveRoomRequest_BroadcastId:
+					resp, err := bcClient.LeaveBroadcast(ctx, &pb.LeaveBroadcastRequest{
+						PlayerId:    loginInfo.PlayerId,
+						BroadcastId: proto.Int64(int64(room.BroadcastId)),
+					})
+					if err != nil {
+						log.Printf("leaving broadcast: %v", err)
+					}
+					log.Printf("leave broadcast resp: %v", resp)
+				case *pb.WsLeaveRoomRequest_RoomId:
+					hdr := &pb.MessageHeader{
+						PlayerId: loginInfo.PlayerId,
+					}
+					_, err := playClient.LeaveRoom(ctx, hdr, &pb.LeaveRoomRequest{Id: room.RoomId})
+					if err != nil {
+						log.Printf("[%s] leaving room: %v", roomIdStr(room.RoomId), err)
+					} else {
+						log.Printf("[%s] left room", roomIdStr(room.RoomId))
+					}
 				}
-				log.Printf("leave broadcast resp: %v", resp)
-			case *pb.WsLeaveRoomRequest_RoomId:
-				hdr := &pb.MessageHeader{
-					PlayerId: loginInfo.PlayerId,
-				}
-				_, err := playClient.LeaveRoom(ctx, hdr, &pb.LeaveRoomRequest{Id: req.LeaveRoom.GetRoomId()})
-				if err != nil {
-					log.Printf("[%s] leaving room: %v", roomIdStr(req.LeaveRoom.GetRoomId()), err)
-				} else {
-					log.Printf("[%s] left room", roomIdStr(req.LeaveRoom.GetRoomId()))
-				}
-			}
-
-		case *pb.WsRequest_SyncMatchTime:
-			hdr := &pb.MessageHeader{
-				PlayerId:       loginInfo.PlayerId,
-				UnknownField_8: req.SyncMatchTime.RoomId_2,
-			}
-			if resp, err := pb.DiscardHeader(playClient.SyncMatchTime(ctx, hdr, &pb.SyncMatchTimeRequest{Ts: req.SyncMatchTime.Ts})); err != nil {
-				log.Printf("[_|%d|_|_] sending match time sync: %v", req.SyncMatchTime.GetRoomId_2(), err)
-			} else {
-				log.Printf("[_|%d|_|_] sync match time response: %v", req.SyncMatchTime.GetRoomId_2(), resp)
-			}
+			}(req.LeaveRoom)
 
 		case *pb.WsRequest_GetPlayerInfo:
-			// TODO hangs sometimes
-			go func() {
+			go func(req *pb.WsGetPlayerInfoRequest) {
 				getPlayerInfoReq := &pb.GetPlayerInfoRequest{
 					InfoOptions: &pb.InfoOptions{
 						UnknownField_1: proto.Int64(1),
 						UnknownField_2: proto.Int64(0),
 					},
 				}
-				switch info := req.GetPlayerInfo.Info.(type) {
+				switch info := req.Info.(type) {
 				case *pb.WsGetPlayerInfoRequest_Id:
 					getPlayerInfoReq.PlayerId = proto.Int64(info.Id)
 				case *pb.WsGetPlayerInfoRequest_Name:
@@ -615,7 +640,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				}
 				log.Printf("player info:\n%s", prototext.Format(resp))
 				wsRespCh <- &pb.WsResponse{Resp: &pb.WsResponse_GetPlayerInfo{GetPlayerInfo: resp}}
-			}()
+			}(req.GetPlayerInfo)
 
 		case *pb.WsRequest_StartAutomatch:
 			resp, err := pb.DiscardHeader(playClient.StartAutomatch(ctx, &pb.MessageHeader{PlayerId: loginInfo.PlayerId}, &pb.StartAutomatchRequest{
@@ -641,6 +666,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				log.Printf("stopping automatch: %v", resp)
 			}
 
+		case *pb.WsRequest_SyncMatchTime:
+			hdr := &pb.MessageHeader{
+				PlayerId:       loginInfo.PlayerId,
+				UnknownField_8: req.SyncMatchTime.RoomId_2,
+			}
+			if resp, err := pb.DiscardHeader(playClient.SyncMatchTime(ctx, hdr, &pb.SyncMatchTimeRequest{Ts: req.SyncMatchTime.Ts})); err != nil {
+				log.Printf("[_|%d|_|_] sending match time sync: %v", req.SyncMatchTime.GetRoomId_2(), err)
+			} else {
+				log.Printf("[_|%d|_|_] sync match time response: %v", req.SyncMatchTime.GetRoomId_2(), resp)
+			}
+
 		case *pb.WsRequest_Move:
 			hdr := &pb.MessageHeader{
 				PlayerId:       loginInfo.PlayerId,
@@ -652,6 +688,68 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			log.Printf("move response: %v", extResp.Resp)
+
+		case *pb.WsRequest_Pass:
+			hdr := &pb.MessageHeader{
+				PlayerId:       loginInfo.PlayerId,
+				UnknownField_8: req.Pass.RoomId_2,
+			}
+			extResp, err := playClient.Pass(ctx, hdr, req.Pass.Pass)
+			if err != nil {
+				log.Printf("sending pass: %v", err)
+				return
+			}
+			log.Printf("pass response: %v", extResp.Resp)
+
+		case *pb.WsRequest_Resign:
+			hdr := &pb.MessageHeader{
+				PlayerId:       loginInfo.PlayerId,
+				UnknownField_8: req.Resign.RoomId_2,
+			}
+			extResp, err := playClient.Resign(ctx, hdr, &pb.ResignRequest{UnknownField_1: proto.Int64(0)})
+			if err != nil {
+				log.Printf("sending resign: %v", err)
+				return
+			}
+			log.Printf("resign response: %v", extResp.Resp)
+
+		case *pb.WsRequest_RequestCounting:
+			hdr := &pb.MessageHeader{
+				PlayerId:       loginInfo.PlayerId,
+				UnknownField_8: req.RequestCounting.RoomId_2,
+			}
+			extResp, err := playClient.RequestCounting(ctx, hdr, &pb.RequestCountingRequest{UnknownField_1: proto.Int64(0)})
+			if err != nil {
+				log.Printf("sending request counting: %v", err)
+				return
+			}
+			log.Printf("request counting response: %v", extResp.Resp)
+
+		case *pb.WsRequest_CountingDecision:
+			hdr := &pb.MessageHeader{
+				PlayerId:       loginInfo.PlayerId,
+				UnknownField_8: req.CountingDecision.RoomId_2,
+			}
+			extResp, err := playClient.SendCountingDecision(ctx, hdr, req.CountingDecision.Decision)
+			if err != nil {
+				log.Printf("sending counting decision: %v", err)
+				return
+			}
+			log.Printf("counting decision response: %v", extResp.Resp)
+
+		case *pb.WsRequest_ListRoomParticipants:
+			go func(req *pb.ListRoomParticipantsRequest) {
+				hdr := &pb.MessageHeader{
+					PlayerId: loginInfo.PlayerId,
+				}
+				resp, err := pb.DiscardHeader(playClient.ListRoomParticipants(ctx, hdr, req))
+				if err != nil {
+					log.Printf("listing room participants: %v", err)
+					return
+				}
+				log.Printf("list room participants response: %v", resp)
+				wsRespCh <- &pb.WsResponse{Resp: &pb.WsResponse_ListRoomParticipants{ListRoomParticipants: resp}}
+			}(req.ListRoomParticipants)
 		}
 	}
 }
