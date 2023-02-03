@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -267,23 +268,28 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	logDir := "log"
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		log.Fatalf("creating log directory: %v", err)
+	}
+
 	// Create log files
-	foxClientLogFile, err := os.Create("log/FoxClient.log")
+	foxClientLogFile, err := os.Create(filepath.Join(logDir, "FoxClient.log"))
 	if err != nil {
 		log.Fatalf("creating FoxClient log file: %v", err)
 	}
 	defer foxClientLogFile.Close()
-	navClientLogFile, err := os.Create("log/NavigationClient.log")
+	navClientLogFile, err := os.Create(filepath.Join(logDir, "NavigationClient.log"))
 	if err != nil {
 		log.Fatalf("creating NavigationClient log file: %v", err)
 	}
 	defer navClientLogFile.Close()
-	bcClientLogFile, err := os.Create("log/BroadcastClient.log")
+	bcClientLogFile, err := os.Create(filepath.Join(logDir, "BroadcastClient.log"))
 	if err != nil {
 		log.Fatalf("creating BroadcastClient log file: %v", err)
 	}
 	defer bcClientLogFile.Close()
-	playClientLogFile, err := os.Create("log/PlayClient.log")
+	playClientLogFile, err := os.Create(filepath.Join(logDir, "PlayClient.log"))
 	if err != nil {
 		log.Fatalf("creating PlayClient log file: %v", err)
 	}
