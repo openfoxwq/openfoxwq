@@ -507,6 +507,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 					wsRespCh <- &pb.WsResponse{Resp: &pb.WsResponse_ListPlayers{ListPlayers: resp}}
 
+					for _, p := range resp.GetPlayers() {
+						if _, known := pb.Country_name[int32(p.GetCountry())]; !known {
+							log.Printf("unknown country: name=%q code=%d", p.GetName(), p.GetCountry())
+							p.Country = pb.Country_UNKNOWN.Enum()
+						}
+					}
+
 					if resp.GetPageIndex()+1 == resp.GetPageCount() {
 						log.Printf("online count: %d", resp.GetOnlineCount())
 						playerListStream.Close()
@@ -645,6 +652,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 					log.Printf("getting player info: %v", err)
 				}
 				log.Printf("player info:\n%s", prototext.Format(resp))
+				if _, known := pb.Country_name[int32(resp.GetRegisterInfo().GetCountry())]; !known {
+					log.Printf("unknown country: name=%q code=%d", resp.RegisterInfo.GetName(), resp.GetRegisterInfo().GetCountry())
+					resp.RegisterInfo.Country = pb.Country_UNKNOWN.Enum()
+				}
 				wsRespCh <- &pb.WsResponse{Resp: &pb.WsResponse_GetPlayerInfo{GetPlayerInfo: resp}}
 			}(req.GetPlayerInfo)
 

@@ -119,7 +119,6 @@ enum Country {
     ITALY = 39;
     UK = 44;
     SWEDEN = 46;
-    GERMANY = 49;
     CHILE = 56;
     PHILIPPINES = 63;
     NEWZEALAND = 64;
@@ -129,7 +128,10 @@ enum Country {
     TAIWAN = 83;
     KOREA = 82;
     CHINA = 86;
+    GERMANY = 349;
+    PORTUGAL = 351;
     ALBANIA = 355;
+    BULGARIA = 359;
     BELARUS = 375;
     UKRAINE = 380;
     HONGKONG = 852;
