@@ -223,16 +223,6 @@ message GetRoomInfoResponse {
         optional string name_alt = 16;
     }
 
-    message RoomSettings {
-        optional int64 board_size = 1;
-        optional int64 komi = 4;
-        optional int64 player_id_1 = 5;
-        optional int64 main_time = 6;
-        optional int64 byoyomi_time = 7;
-        optional int64 byoyomi_periods = 8;
-        optional int64 player_id_2 = 26;
-    }
-
     message Unknown5 {}
 
     message RoomInfo {
@@ -299,14 +289,6 @@ message AcceptMatchResponse {
 }
 
 message MatchStartEvent {
-    message MatchInfo {
-        optional int64 board_size = 1;
-        optional int64 player_id_black = 5;
-        optional int64 main_time_sec = 6;
-        optional int64 byoyomi_time_sec = 7;
-        optional int64 byoyomi_periods = 8;
-        optional int64 player_id_white = 26;
-    }
     message MatchPlayerInfo {
         optional int64 player_id = 1;
         optional string name = 3;
@@ -325,7 +307,7 @@ message MatchStartEvent {
         optional int64 max_duan = 8;
     }
 
-    optional MatchInfo match_info = 1;
+    optional RoomSettings room_settings = 1;
     optional int64 unknown_field_2 = 2;
     optional int64 unix_ts_nanos = 3;
     optional int64 unknown_field_4 = 4;

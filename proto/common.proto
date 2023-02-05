@@ -178,6 +178,17 @@ message MatchSettings {
    required int64 board_size = 16;
 }
 
+message RoomSettings {
+    optional int64 board_size = 1;
+    optional int64 handicap = 3;
+    optional int64 komi = 4;
+    optional int64 player_id_black = 5;
+    optional int64 main_time_sec = 6;
+    optional int64 byoyomi_time_sec = 7;
+    optional int64 byoyomi_periods = 8;
+    optional int64 player_id_white = 26;
+}
+
 message RoomId {
     optional int64 id_1 = 1;
     optional int64 id_2 = 2;
