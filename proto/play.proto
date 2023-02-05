@@ -311,6 +311,7 @@ message MatchStartEvent {
         optional int64 player_id = 1;
         optional string name = 3;
         optional Rank rank = 4;
+        optional string avatar_url = 18;
         optional Country country = 20;
     }
     message AutomatchPreset {
