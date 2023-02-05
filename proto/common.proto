@@ -112,21 +112,23 @@ enum Country {
     USA = 1;
     RUSSIA = 7;
     SOUTHAFRICA = 27;
-    NETHERLANDS = 31;
     GREECE = 30;
+    NETHERLANDS = 31;
     FRANCE = 33;
     HUNGARY = 36;
     ITALY = 39;
     UK = 44;
     SWEDEN = 46;
     CHILE = 56;
+    AUSTRALIA = 61;
     PHILIPPINES = 63;
     NEWZEALAND = 64;
     SINGAPORE = 65;
     THAILAND = 66;
     JAPAN = 81;
-    TAIWAN = 83;
     KOREA = 82;
+    TAIWAN = 83;
+    VIETNAM = 84;
     CHINA = 86;
     GERMANY = 349;
     PORTUGAL = 351;
@@ -136,6 +138,7 @@ enum Country {
     UKRAINE = 380;
     HONGKONG = 852;
     MACAU = 853;
+    SAUDIARABIA = 967;
     CANADA = 11111;
 }
 
