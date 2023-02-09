@@ -3,6 +3,24 @@ openfoxwq
 
 This repository contains my attempt to reverse engineer the [Fox Go Server](https://foxwq.com/) protocol and build a client that is usable in other platforms (at least Linux and OSX). The only native client available at the moment is for Windows and the mobile clients (Android and iOS), and they are not entirely localized although this is a lesser problem for most people.
 
+Usage and screenshots
+===
+
+In order to use `openfoxwq`, you must plug a GUI to it. The following screenshots are from the [companion Qt-based client](https://github.com/openfoxwq/openfoxwq_qtclient). They are both available together in the [same pre-release](https://github.com/openfoxwq/openfoxwq/releases/tag/v0.1-alpha).
+
+Ubuntu
+---
+
+![Lobby](https://user-images.githubusercontent.com/9343380/217947810-3b13b652-9e7a-401e-9b86-d31c99b9a17f.png)
+![User Profile](https://user-images.githubusercontent.com/9343380/217948028-5ab5a214-3278-4b5b-8bd8-38e4d9c81ac1.png)
+![Broadcast Room](https://user-images.githubusercontent.com/9343380/217948040-cdf646f0-ed8c-4520-8c42-09c916fa10d3.png)
+
+OSX
+---
+
+![Lobby](https://user-images.githubusercontent.com/9343380/217948564-0b947d6c-7ccf-430a-827c-1ecc1e942ea5.png)
+![Match](https://user-images.githubusercontent.com/9343380/217948927-f7999504-9876-485d-b21a-c4802eda03a7.png)
+
 Build Instructions
 ===
 
