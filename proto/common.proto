@@ -114,13 +114,16 @@ enum Country {
     SOUTHAFRICA = 27;
     GREECE = 30;
     NETHERLANDS = 31;
+    BELGIUM = 32;
     FRANCE = 33;
     HUNGARY = 36;
     ITALY = 39;
+    AUSTRIA = 43;
     UK = 44;
     SWEDEN = 46;
     CHILE = 56;
     AUSTRALIA = 61;
+    INDONESIA = 62;
     PHILIPPINES = 63;
     NEWZEALAND = 64;
     SINGAPORE = 65;
@@ -131,10 +134,12 @@ enum Country {
     VIETNAM = 84;
     CHINA = 86;
     TURKEY = 90;
+    NIGERIA = 234;
     GERMANY = 349;
     PORTUGAL = 351;
     ALBANIA = 355;
     BULGARIA = 359;
+    LATVIA = 371;
     BELARUS = 375;
     UKRAINE = 380;
     HONGKONG = 852;
@@ -149,6 +154,20 @@ enum PlayerStatus {
     PSTATUS_WATCH = 2;
 }
 
+enum Sex {
+    SEX_MALE = 0;
+    SEX_FEMALE = 1;
+}
+
+enum Flair {
+    FLAIR_UNKNOWN = 0;
+    FLAIR_PRO = 1;
+    FLAIR_GOLD_CROWN = 2;
+    FLAIR_TOP_AMATEUR = 3;
+    FLAIR_SILVER_CROWN = 4;
+    FLAIR_ELITE_AMATEUR = 5;
+}
+
 message PlayerInfo {
     required int64 player_id = 1;
     optional string name = 2;
@@ -160,7 +179,13 @@ message PlayerInfo {
     optional PlayerStatus status = 9;
     optional int64 ranked_wins = 10;
     optional int64 ranked_losses = 11;
+    optional Sex sex = 14;
     optional int64 foxcoin = 21;
+    optional Flair flair = 26;
+    optional MembershipType membership_type = 27;
+    optional int64 membership_valid_until = 28;
+    optional bool ai = 36;
+    optional bool amateur_6d = 37;
 
     // Unknown fields
     optional int64 unknown_field_8 = 8; // rating or wr
@@ -232,4 +257,10 @@ message BroadcastInfo {
     required int64 player_id_white = 12;
     required BroadcastPlayerInfo player_info_black = 13;
     required BroadcastPlayerInfo player_info_white = 14;
+}
+
+enum MembershipType {
+    MEMBERSHIP_NONE = 0;
+    MEMBERSHIP_SILVER = 1;
+    MEMBERSHIP_GOLD = 2;
 }

@@ -116,12 +116,29 @@ message GetPlayerInfoResponse {
         optional int64 unknown_field_4 = 4;
     }
 
-    message AdditionalInfo {
+    message MembershipInfo {
+        optional MembershipType type = 1;
+        optional int64 valid_until = 2;
+    }
+
+    message PlayerFlair {
+        optional bool ai = 2;
+    }
+
+    message Unknown10 {}
+
+    message Unknown11 {}
+
+    message Unknown19 {}
+
+    message Unknown22 {
         optional int64 unknown_field_1 = 1;
         optional int64 unknown_field_2 = 2;
         optional string unknown_field_3 = 3;
         optional string unknown_field_4 = 4;
     }
+
+    message Unknown23 {}
 
     required int64 error_code = 1;
     required InfoOptions info_options = 2;
@@ -132,12 +149,18 @@ message GetPlayerInfoResponse {
     optional Rank rank = 7;
     optional RegisterInfo register_info = 8;
     optional RecentRecord recent_record = 9;
+    optional Unknown10 unknown_field_10 = 10;
+    optional Unknown11 unknown_field_11 = 11;
     optional OverallResults overall_results = 12;
+    optional MembershipInfo membership_info = 13;
+    optional PlayerFlair flair = 14;
     optional ProInfo pro_info = 15;
     optional PerformanceRecord perf_record = 18;
+    optional Unknown19 unknown_field_19 = 19;
     repeated Results results = 16;
     optional Rooms rooms = 20;
-    optional AdditionalInfo additional_info = 22;
+    optional Unknown22 unknown_field_22 = 22;
+    optional Unknown23 unknown_field_23 = 23;
 }
 
 message InfoOptions {
