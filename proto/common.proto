@@ -121,7 +121,10 @@ enum Country {
     AUSTRIA = 43;
     UK = 44;
     SWEDEN = 46;
+    NORWAY = 47;
+    MEXICO = 52;
     CHILE = 56;
+    MALAYSIA = 60;
     AUSTRALIA = 61;
     INDONESIA = 62;
     PHILIPPINES = 63;
@@ -145,6 +148,7 @@ enum Country {
     HONGKONG = 852;
     MACAU = 853;
     SAUDIARABIA = 967;
+    ISRAEL = 973;
     CANADA = 11111;
 }
 
@@ -160,7 +164,7 @@ enum Sex {
 }
 
 enum Flair {
-    FLAIR_UNKNOWN = 0;
+    FLAIR_NONE = 0;
     FLAIR_PRO = 1;
     FLAIR_GOLD_CROWN = 2;
     FLAIR_TOP_AMATEUR = 3;

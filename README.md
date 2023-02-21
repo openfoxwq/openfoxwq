@@ -27,7 +27,7 @@ Build Instructions
 Even though this repository contains only the server component, most people want to build the UI component as well so these instructions cover both.
 
 Dependencies:
-- [Go](https://go.dev/doc/install)
+- [Go](https://go.dev/doc/install) (1.18 or higher)
 - [protobuf](https://protobuf.dev/downloads/) compiler with [Go plugin](https://protobuf.dev/getting-started/gotutorial/#compiling-protocol-buffers)
 - [Qt](https://www.qt.io/offline-installers) (I use the 5.12.X offline installer)
 

@@ -46,13 +46,18 @@ message GetPlayerInfoResponse {
         required string name = 5;
         required Country country = 7;
         required int64 member_since_unix_ts = 8;
+        required Sex sex = 9;
     }
 
     message RecentRecord {
-        // rank up/down requirements?
-        message Unknown1 {}
+        message RankRequirements {
+            optional int64 up1 = 1;
+            optional int64 up2 = 2;
+            optional int64 down1 = 3;
+            optional int64 down2 = 4;
+        }
 
-        optional Unknown1 unknown_field_1 = 1;
+        optional RankRequirements rank_requirements = 1;
         optional string streak = 2; 
         optional string unknown_field_3 = 3; 
     }
@@ -122,6 +127,7 @@ message GetPlayerInfoResponse {
     }
 
     message PlayerFlair {
+        optional Flair flair = 1;
         optional bool ai = 2;
     }
 
