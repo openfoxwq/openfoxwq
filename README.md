@@ -6,7 +6,13 @@ This repository contains my attempt to reverse engineer the [Fox Go Server](http
 Usage and screenshots
 ===
 
-In order to use `openfoxwq`, you must plug a GUI to it. The following screenshots are from the [companion Qt-based client](https://github.com/openfoxwq/openfoxwq_qtclient). They are both available together in the [same pre-release](https://github.com/openfoxwq/openfoxwq/releases/tag/v0.1-alpha).
+In order to use `openfoxwq`, you must plug a GUI to it. The following screenshots are from the [companion Qt-based client](https://github.com/openfoxwq/openfoxwq_qtclient). They are both available together in the releases.
+
+1. Download both `openfoxwq_wsserver` and `openfoxwq_qtclient` for your target OS from the [Releases](https://github.com/openfoxwq/openfoxwq/releases) page.
+2. If `openfoxwq_wsserver` is not executable, make it executable by running e.g. `chmod a+x ~/Downloads/openfoxwq_wsserver`.
+3. Run `openfoxwq_wsserver`. It will stay in background while the client is used.
+4. Run `openfoxwq_qtclient`. For OSX users: if it complains about the developer not being identified, go to `System Preferences -> Security and Privacy -> General` and click the `Open Anyway` button.
+5. After closing the client, the server closes automatically, so be sure to run it before running the client again.
 
 Ubuntu
 ---
@@ -27,7 +33,7 @@ Build Instructions
 Even though this repository contains only the server component, most people want to build the UI component as well so these instructions cover both.
 
 Dependencies:
-- [Go](https://go.dev/doc/install) (1.18 or higher)
+- [Go](https://go.dev/doc/install) (1.19 or higher)
 - [protobuf](https://protobuf.dev/downloads/) compiler with [Go plugin](https://protobuf.dev/getting-started/gotutorial/#compiling-protocol-buffers)
 - [Qt](https://www.qt.io/offline-installers) (I use the 5.12.X offline installer)
 

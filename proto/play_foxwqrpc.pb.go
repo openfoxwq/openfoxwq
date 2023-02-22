@@ -234,7 +234,7 @@ func NewPlayClient(addr string, log *log.Logger) (PlayClient, error) {
 		return nil, fmt.Errorf("connecting to %s: %v", addr, err)
 	}
 
-	frw := newLenEncodedFraming(rwc)
+	frw := NewLenEncodedFraming(rwc)
 	inFrameCh := make(chan []byte, 8)
 	reqCh := make(chan frameWriterReq, 8)
 	errCh := make(chan error, 8)

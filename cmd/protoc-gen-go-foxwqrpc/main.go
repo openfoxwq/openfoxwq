@@ -248,7 +248,7 @@ func generateClientImplementation(g *protogen.GeneratedFile, name string, rpcs [
 	g.P(`    	return nil, fmt.Errorf("connecting to %s: %v", addr, err)`)
 	g.P(`    }`)
 	g.P()
-	g.P(`    frw := newLenEncodedFraming(rwc)`)
+	g.P(`    frw := NewLenEncodedFraming(rwc)`)
 	g.P(`    inFrameCh := make(chan []byte, 8)`)
 	g.P(`    reqCh := make(chan frameWriterReq, 8)`)
 	g.P(`    errCh := make(chan error, 8)`)

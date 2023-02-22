@@ -7,6 +7,7 @@ import (
 )
 
 type FrameReadWriter interface {
+	HasFrame() bool
 	ReadFrame() ([]byte, error)
 	WriteFrame([]byte) error
 }
@@ -17,7 +18,7 @@ type lenEncodedFraming struct {
 	inBuf   bytes.Buffer
 }
 
-func (lef *lenEncodedFraming) hasFullMessage() bool {
+func (lef *lenEncodedFraming) HasFrame() bool {
 	if lef.inBuf.Len() < 2 {
 		return false
 	}
@@ -27,7 +28,7 @@ func (lef *lenEncodedFraming) hasFullMessage() bool {
 
 func (lef *lenEncodedFraming) ReadFrame() ([]byte, error) {
 	// Read data until there's at least one full frame
-	for !lef.hasFullMessage() {
+	for !lef.HasFrame() {
 		n, err := lef.rwc.Read(lef.readBuf)
 		if err != nil {
 			return nil, err
@@ -57,7 +58,11 @@ func (lef *lenEncodedFraming) WriteFrame(data []byte) error {
 	return nil
 }
 
-func newLenEncodedFraming(rwc io.ReadWriter) *lenEncodedFraming {
+func (lef *lenEncodedFraming) Write(b []byte) (int, error) {
+	return lef.inBuf.Write(b)
+}
+
+func NewLenEncodedFraming(rwc io.ReadWriter) *lenEncodedFraming {
 	return &lenEncodedFraming{
 		rwc:     rwc,
 		readBuf: make([]byte, 64<<10),
