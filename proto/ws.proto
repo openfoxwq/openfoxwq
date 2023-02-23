@@ -10,7 +10,7 @@ import "proto/play.proto";
 option go_package = "github.com/openfoxwq/openfoxwq/proto";
 
 message WsLoginRequest {
-    required string username = 1;
+    required bytes username = 1;
     required string password = 2;
 }
 
@@ -33,7 +33,7 @@ message WsLeaveRoomRequest {
 
 message WsGetPlayerInfoRequest {
     oneof info {
-        string name = 1;
+        bytes name = 1;
         int64 id = 2;
     }
 }

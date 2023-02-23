@@ -35,15 +35,15 @@ message ListPlayersResponse {
 
 message GetPlayerInfoRequest {
     optional int64 player_id = 1;
-    optional string player_name = 2;
+    optional bytes player_name = 2;
     required InfoOptions info_options = 3;
 }
 
 message GetPlayerInfoResponse {
     message RegisterInfo {
         required int64 player_id = 1;
-        required string name_native = 4;
-        required string name = 5;
+        required bytes name_native = 4;
+        required bytes name = 5;
         required Country country = 7;
         required int64 member_since_unix_ts = 8;
         required Sex sex = 9;
@@ -71,8 +71,8 @@ message GetPlayerInfoResponse {
     message ProInfo {
         optional int64 unknown_field_1 = 1;
         optional int64 unknown_field_2 = 2;
-        optional string name1 = 3;
-        optional string name2 = 4;
+        optional bytes name1 = 3;
+        optional bytes name2 = 4;
         optional Rank rank = 5;
         optional int64 association = 6; // some of them match country, e.g. 86
     }
@@ -105,8 +105,8 @@ message GetPlayerInfoResponse {
                 optional int64 player_id = 1;
                 optional Rank rank = 2;
                 optional Country country = 3;
-                optional string name4 = 4;
-                optional string name5 = 5;
+                optional bytes name4 = 4;
+                optional bytes name5 = 5;
             }
 
             optional RoomId id = 1;
@@ -149,7 +149,7 @@ message GetPlayerInfoResponse {
     required int64 error_code = 1;
     required InfoOptions info_options = 2;
     optional int64 seached_player_id = 3;
-    optional string searched_player_name = 4;
+    optional bytes searched_player_name = 4;
     optional int64 player_id = 5;
     optional int64 foxcoin = 6;
     optional Rank rank = 7;
@@ -242,14 +242,14 @@ message GetRoomInfoResponse {
 
     message PlayerEntry {
         optional int64 id = 1;
-        optional string name = 2;
+        optional bytes name = 2;
         optional Rank rank = 3;
         optional int64 main_time = 9;
         optional int64 byoyomi_periods = 10;
         optional int64 byoyomi_time = 11;
         optional string avatar_url = 13;
         optional Country country = 15;
-        optional string name_alt = 16;
+        optional bytes name_alt = 16;
     }
 
     message Unknown5 {}
@@ -297,7 +297,7 @@ message StopAutomatchResponse {
 message AutomatchFoundEvent {
     message RoomParticipant {
         required int64 player_id = 1;
-        optional string name = 3;
+        optional bytes name = 3;
         optional Rank rank = 4;
         optional string avatar_url = 18;
     }
@@ -320,7 +320,7 @@ message AcceptMatchResponse {
 message MatchStartEvent {
     message MatchPlayerInfo {
         optional int64 player_id = 1;
-        optional string name = 3;
+        optional bytes name = 3;
         optional Rank rank = 4;
         optional string avatar_url = 18;
         optional Country country = 20;
@@ -385,8 +385,8 @@ message ListRoomParticipantsRequest {
 message ListRoomParticipantsResponse {
     message RoomParticipantInfo {
         optional int64 player_id = 1;
-        optional string name = 2;
-        optional string name_alt = 3;
+        optional bytes name = 2;
+        optional bytes name_alt = 3;
         optional Rank rank = 4;
         optional int64 wins = 5;
         optional int64 losses = 6;

@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/encoding/prototext"
@@ -371,7 +372,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		case *pb.WsRequest_Login:
 			passwordHash := md5.Sum([]byte(req.Login.GetPassword()))
 			loginResp, err := navClient.Login(ctx, &pb.LoginRequest{
-				User:           proto.String(req.Login.GetUsername()),
+				User:           req.Login.GetUsername(),
 				App:            proto.String("foxwq"),
 				PasswordHash:   proto.String(hex.EncodeToString(passwordHash[:])),
 				ClientVersion:  navInfo.GetVersionInfo().Version1,
@@ -512,6 +513,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 							log.Printf("unknown country: name=%q code=%d", p.GetName(), p.GetCountry())
 							p.Country = pb.Country_UNKNOWN.Enum()
 						}
+						if !utf8.Valid(p.GetName()) {
+							log.Printf("player name is not valid utf-8: uid=%d name=%s", p.GetPlayerId(), hex.EncodeToString(p.GetName()))
+						}
+						if !utf8.Valid(p.GetNameNative()) {
+							log.Printf("player name_native is not valid utf-8: uid=%d name_native=%s", p.GetPlayerId(), hex.EncodeToString(p.GetNameNative()))
+						}
 					}
 
 					if resp.GetPageIndex()+1 == resp.GetPageCount() {
@@ -645,7 +652,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				case *pb.WsGetPlayerInfoRequest_Id:
 					getPlayerInfoReq.PlayerId = proto.Int64(info.Id)
 				case *pb.WsGetPlayerInfoRequest_Name:
-					getPlayerInfoReq.PlayerName = proto.String(info.Name)
+					getPlayerInfoReq.PlayerName = info.Name
 				}
 				resp, err := pb.DiscardHeader(playClient.GetPlayerInfo(ctx, &pb.MessageHeader{PlayerId: loginInfo.PlayerId}, getPlayerInfoReq))
 				if err != nil {

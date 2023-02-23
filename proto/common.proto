@@ -177,8 +177,8 @@ enum Flair {
 
 message PlayerInfo {
     required int64 player_id = 1;
-    optional string name = 2;
-    optional string name_native = 3;
+    optional bytes name = 2;
+    optional bytes name_native = 3;
     optional Rank rank = 4;
     optional Country country = 5;
     optional int64 club_id = 6;
@@ -231,8 +231,8 @@ message RoomId {
 
 message BroadcastInfo {
     message BroadcastPlayerInfo {
-        optional string name = 1;
-        optional string name_alt = 2;
+        optional bytes name = 1;
+        optional bytes name_alt = 2;
         optional Rank rank = 3;
         optional Country country = 4;
     }

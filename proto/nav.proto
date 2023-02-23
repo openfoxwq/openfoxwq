@@ -15,7 +15,7 @@ message ListServersResponse {
 }
 
 message LoginRequest {
-    required string user = 1;
+    required bytes user = 1;
     required string app = 2;
     required string password_hash = 3;
     required int64 client_version = 5; 
