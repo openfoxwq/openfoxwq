@@ -13,7 +13,6 @@ import (
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 	"github.com/openfoxwq/openfoxwq/proto"
-	"github.com/openfoxwq/openfoxwq/util/msgdbg"
 )
 
 var (
@@ -41,11 +40,28 @@ func main() {
 		log.Fatalf("listing interfaces: %v", err)
 	}
 
+	var iface net.Interface
 	var names []string
 	for _, i := range ifs {
 		names = append(names, i.Name)
+		if i.Name == *in {
+			iface = i
+		}
 	}
 	log.Printf("interfaces: %v", names)
+
+	localAddrs, err := iface.Addrs()
+	if err != nil {
+		log.Fatalf("listing interface addresses: %v", err)
+	}
+	var localNetworks []*net.IPNet
+	for _, addr := range localAddrs {
+		_, network, err := net.ParseCIDR(addr.String())
+		if err != nil {
+			log.Fatalf("parsing address %s: %v", addr.String(), err)
+		}
+		localNetworks = append(localNetworks, network)
+	}
 
 	log.Printf("starting capture on %s...", *in)
 
@@ -96,11 +112,22 @@ func main() {
 			if err != nil {
 				log.Fatalf("reading frame from stream %s: %v", streamKey, err)
 			}
-			if s, err := msgdbg.Process(frame, true); err != nil {
+			isReq := false
+			for _, network := range localNetworks {
+				if network.Contains(net.ParseIP(srcIP)) {
+					isReq = true
+					break
+				}
+			}
+			if s, err := proto.MsgDbg(frame, isReq); err != nil {
 				ignoredStreams[streamKey] = true
 				delete(streams, streamKey)
 			} else {
-				log.Printf("[%s:%s -> %s:%s]: %s", srcIP, srcPort, dstIP, dstPort, s)
+				if isReq {
+					log.Printf("[%s:%s -> %s:%s]: %s", srcIP, srcPort, dstIP, dstPort, s)
+				} else {
+					log.Printf("[%s:%s <- %s:%s]: %s", dstIP, dstPort, srcIP, srcPort, s)
+				}
 			}
 		}
 	}
